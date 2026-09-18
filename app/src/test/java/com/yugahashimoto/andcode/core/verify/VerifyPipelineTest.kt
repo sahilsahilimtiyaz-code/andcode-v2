@@ -31,9 +31,9 @@ class VerifyPipelineTest {
                 if (step == VerifyStep.BUILD) "BUILD FAILED" else "ok"
             },
         )
-        pipeline.run("/tmp/test")
+        val report = pipeline.run("/tmp/test")
         assertTrue(stepsRun.contains(VerifyStep.BUILD))
-        assertFalse(stepsRun.contains(VerifyStep.REVIEW))
+        assertFalse(report.isSuccessful)
     }
 
     @Test
