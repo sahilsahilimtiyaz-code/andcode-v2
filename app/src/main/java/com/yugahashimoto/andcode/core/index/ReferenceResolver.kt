@@ -16,7 +16,7 @@ class ReferenceResolver(private val index: ProjectIndex) {
     fun findDefinition(symbolName: String): SymbolEntry? {
         for (fileIndex in index.files.values) {
             val match = fileIndex.symbols.firstOrNull {
-                it.name == symbolName && it.kind != SymbolKind.IMPORT && it.kind != SymbolKind.REFERENCE
+                it.name == symbolName && it.kind != SymbolKind.IMPORT
             }
             if (match != null) return match
         }

@@ -60,8 +60,12 @@ class RetryPolicyTest {
     @Test
     fun `execute throws after exhausting attempts`() = runTest {
         val policy = RetryPolicy(maxAttempts = 2, baseDelayMillis = 10, jitter = false)
-        assertThrows(RuntimeException::class.java) {
+        var threw = false
+        try {
             policy.execute { throw RuntimeException("always fail") }
+        } catch (e: RuntimeException) {
+            threw = true
         }
+        assert(threw) { "Expected RuntimeException to be thrown" }
     }
 }

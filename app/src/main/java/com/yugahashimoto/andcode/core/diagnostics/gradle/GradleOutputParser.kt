@@ -23,8 +23,7 @@ object GradleOutputParser {
         setOf(RegexOption.DOT_MATCHES_ALL),
     )
     private val timeoutPattern = Regex(
-        """(?:timeout|timed out).*?(\d+)\s*(?:ms|seconds)""",
-        setOf(RegexOption.CASE_INSENSITIVE),
+        """(?i)(?:timeout|timed out).*?(\d+)\s*(?:ms|seconds)""",
     )
     private val buildFailedPattern = Regex(
         """FAILURE: Build failed with an exception""",

@@ -49,7 +49,8 @@ class TerminalAutomationEngine(
             val resolvedCommand = resolveVariables(step.command, allVars)
             val resolvedDir = step.workingDir?.let { resolveVariables(it, allVars) } ?: workingDir
 
-            if (step.condition != null && !evaluateCondition(step.condition!!, allVars, capturedOutputs)) {
+            val lastExitCode = stepResults.lastOrNull()?.exitCode
+            if (step.condition != null && !evaluateCondition(step.condition!!, allVars, capturedOutputs, lastExitCode)) {
                 val skipped = StepResult(
                     step = step,
                     exitCode = 0,
@@ -132,8 +133,9 @@ class TerminalAutomationEngine(
         condition: StepCondition,
         variables: Map<String, String>,
         capturedOutputs: Map<String, String>,
+        lastExitCode: Int?,
     ): Boolean = when (condition) {
-        is StepCondition.ExitCode -> true
+        is StepCondition.ExitCode -> lastExitCode == condition.expected
         is StepCondition.OutputContains -> {
             capturedOutputs.values.any { it.contains(condition.text) }
         }

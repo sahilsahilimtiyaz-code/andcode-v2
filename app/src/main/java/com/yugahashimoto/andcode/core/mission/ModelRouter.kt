@@ -1,10 +1,8 @@
 package com.yugahashimoto.andcode.core.mission
 
-import com.yugahashimoto.andcode.core.api.ConnectionQualityMonitor
 import com.yugahashimoto.andcode.core.api.ProviderCatalog
 import com.yugahashimoto.andcode.core.reliability.CircuitBreakerState
 import com.yugahashimoto.andcode.core.reliability.CircuitState
-import com.yugahashimoto.andcode.data.repository.ProviderCatalogCache
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -36,8 +34,6 @@ data class RoutingDecision(
 )
 
 class ModelRouter(
-    private val qualityMonitor: ConnectionQualityMonitor? = null,
-    private val catalogCache: ProviderCatalogCache? = null,
     private val healthOverrides: Map<String, ProviderHealth> = emptyMap(),
 ) {
     private val mutableHealth = MutableStateFlow<Map<String, ProviderHealth>>(emptyMap())

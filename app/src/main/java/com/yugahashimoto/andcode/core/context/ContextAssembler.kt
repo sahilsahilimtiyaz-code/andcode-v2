@@ -67,8 +67,8 @@ class ContextAssembler(
         sourceTokens[ContextSource.TOOL_OUTPUT] = toolTokens
 
         val totalTokens = snippets.sumOf { it.tokenEstimate }
-        val droppedConversation = rankedConversation.size - (conversationTokens > 0).compareTo(0)
-        val droppedFiles = rankedFiles.size - (fileTokens > 0).compareTo(0)
+        val droppedConversation = if (conversationTokens > 0) 0 else rankedConversation.size
+        val droppedFiles = if (fileTokens > 0) 0 else rankedFiles.size
 
         return AssembledContext(
             snippets = snippets,

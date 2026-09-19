@@ -7,6 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel as coroutineCancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -123,7 +124,7 @@ class StreamResumeManager(
     fun destroy() {
         activeJobs.values.forEach { it.cancel() }
         activeJobs.clear()
-        scope.cancel()
+        scope.coroutineCancel()
     }
 
     private fun updateState(sessionId: String, transform: (StreamState) -> StreamState) {

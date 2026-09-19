@@ -46,7 +46,7 @@ data class PluginRunResult(
     val output: String = "",
     val error: String? = null,
     val exitCode: Int? = null,
-    val logs: List<PluginLogEntry> = emptyMap(),
+    val logs: List<PluginLogEntry> = emptyList(),
 ) {
     val durationMillis: Long get() = finishedAt - startedAt
 }
