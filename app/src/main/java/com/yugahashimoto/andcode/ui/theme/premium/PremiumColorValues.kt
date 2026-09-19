@@ -45,6 +45,9 @@ object PremiumColorValues {
     /** Neon Blue at 12 % alpha – used for subtle glass tints. */
     val NeonBlueTint = Color(0x2000D4FF)
 
+    /** Neon Blue-Violet step – intermediate stop in 5-dot typing gradient. */
+    val NeonBlueViolet = Color(0xFF4DA8FF)
+
     // ── Secondary / Electric Purple ───────────────────────────────────────────
     /** Electric Purple – primary gradient end, neon border highlight. */
     val ElectricPurple = Color(0xFFB84CFF)
@@ -57,6 +60,9 @@ object PremiumColorValues {
 
     /** Electric Purple at 12 % alpha – subtle glass tint. */
     val ElectricPurpleTint = Color(0x20B84CFF)
+
+    /** Violet-Purple step – intermediate stop in 5-dot typing gradient. */
+    val NeonVioletPurple = Color(0xFFD060FF)
 
     // ── Mid-gradient ──────────────────────────────────────────────────────────
     /** Violet mid-stop between NeonBlue and ElectricPurple. */
