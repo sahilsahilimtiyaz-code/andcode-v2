@@ -60,7 +60,7 @@ class ReliabilityModelsTest {
     fun `circuit breaker transitions to half-open after cooldown`() {
         var breaker = CircuitBreakerState(
             state = CircuitState.OPEN,
-            lastFailureMillis = System.currentTimeMillis() - 120_000L,
+            lastFailureTimeMillis = System.currentTimeMillis() - 120_000L,
         )
         breaker = breaker.attemptReset()
         assertEquals(CircuitState.HALF_OPEN, breaker.state)

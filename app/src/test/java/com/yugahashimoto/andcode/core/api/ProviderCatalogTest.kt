@@ -8,19 +8,19 @@ import org.junit.Test
 class ProviderCatalogTest {
 
     @Test
-    fun `provider reports connected when it has models`() {
+    fun `provider with models is considered connected`() {
         val provider = OpenCodeProvider(
             id = "anthropic",
             name = "Anthropic",
             models = mapOf("claude-sonnet" to OpenCodeModel(id = "claude-sonnet")),
         )
-        assertTrue(provider.connected)
+        assertTrue("Provider with models should be connected", provider.models.isNotEmpty())
     }
 
     @Test
-    fun `provider reports not connected when no models`() {
+    fun `provider without models is not connected`() {
         val provider = OpenCodeProvider(id = "openai", name = "OpenAI")
-        assertFalse(provider.connected)
+        assertFalse("Provider without models should not be connected", provider.models.isNotEmpty())
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.yugahashimoto.andcode.core.reliability
 
+import com.yugahashimoto.andcode.data.local.MissionStateEntity
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
