@@ -29,31 +29,32 @@ class OpenCodeEventParser(
             when (type) {
                 "server.connected" -> OpenCodeEvent.ServerConnected
                 "message.updated" -> {
-                    val info =
-                        json.decodeFromJsonElement(
-                            OpenCodeMessageInfo.serializer(),
-                            properties["info"]!!.jsonObject,
-                        )
+                    val infoElement = properties["info"] ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val info = json.decodeFromJsonElement(OpenCodeMessageInfo.serializer(), infoElement.jsonObject)
                     OpenCodeEvent.MessageUpdated(info)
                 }
                 "message.part.updated" -> {
-                    val part = json.decodeFromJsonElement(OpenCodePart.serializer(), properties["part"]!!.jsonObject)
+                    val partElement = properties["part"] ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val part = json.decodeFromJsonElement(OpenCodePart.serializer(), partElement.jsonObject)
                     OpenCodeEvent.MessagePartUpdated(part)
                 }
-                "message.part.delta" ->
-                    OpenCodeEvent.MessagePartDelta(
-                        sessionId = properties["sessionID"]!!.jsonPrimitive.content,
-                        messageId = properties["messageID"]!!.jsonPrimitive.content,
-                        partId = properties["partID"]!!.jsonPrimitive.content,
-                        field = properties["field"]!!.jsonPrimitive.content,
-                        delta = properties["delta"]!!.jsonPrimitive.content,
-                    )
-                "permission.asked" ->
+                "message.part.delta" -> {
+                    val sessionId = properties["sessionID"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val messageId = properties["messageID"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val partId = properties["partID"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val field = properties["field"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val delta = properties["delta"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    OpenCodeEvent.MessagePartDelta(sessionId, messageId, partId, field, delta)
+                }
+                "permission.asked" -> {
+                    val id = properties["id"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val sessionId = properties["sessionID"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val permission = properties["permission"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
                     OpenCodeEvent.PermissionAsked(
                         PermissionRequest(
-                            id = properties["id"]!!.jsonPrimitive.content,
-                            sessionId = properties["sessionID"]!!.jsonPrimitive.content,
-                            permission = properties["permission"]!!.jsonPrimitive.content,
+                            id = id,
+                            sessionId = sessionId,
+                            permission = permission,
                             patterns =
                                 (properties["patterns"] as? JsonArray)
                                     ?.mapNotNull { element -> (element as? JsonPrimitive)?.content }
@@ -65,50 +66,49 @@ class OpenCodeEventParser(
                                     .orEmpty(),
                         ),
                     )
+                }
                 "question.asked" -> {
                     val questions =
                         (properties["questions"] as? JsonArray)
                             ?.mapNotNull { element -> parseQuestionPrompt(element) }
                             .orEmpty()
-                    require(questions.isNotEmpty()) { "question.asked requires at least one valid prompt" }
+                    if (questions.isEmpty()) return@runCatching OpenCodeEvent.Unknown(type, raw)
 
+                    val id = properties["id"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val sessionId = properties["sessionID"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
                     OpenCodeEvent.QuestionAsked(
                         QuestionRequest(
-                            id = properties["id"]!!.jsonPrimitive.content,
-                            sessionId = properties["sessionID"]!!.jsonPrimitive.content,
+                            id = id,
+                            sessionId = sessionId,
                             questions = questions,
-                            // Only `/global/event` carries the workspace, and answering needs it.
                             directory = (envelope["directory"] as? JsonPrimitive)?.content,
                         ),
                     )
                 }
-                "permission.replied" ->
-                    OpenCodeEvent.PermissionReplied(
-                        sessionId = properties["sessionID"]!!.jsonPrimitive.content,
-                        requestId = properties["requestID"]!!.jsonPrimitive.content,
-                    )
-                "session.idle" -> OpenCodeEvent.SessionIdle(properties["sessionID"]!!.jsonPrimitive.content)
+                "permission.replied" -> {
+                    val sessionId = properties["sessionID"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val requestId = properties["requestID"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    OpenCodeEvent.PermissionReplied(sessionId = sessionId, requestId = requestId)
+                }
+                "session.idle" -> {
+                    val sessionId = properties["sessionID"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    OpenCodeEvent.SessionIdle(sessionId)
+                }
                 "session.created" -> {
-                    val session =
-                        json.decodeFromJsonElement(
-                            OpenCodeSession.serializer(),
-                            properties["info"]!!.jsonObject,
-                        )
+                    val infoElement = properties["info"] ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val session = json.decodeFromJsonElement(OpenCodeSession.serializer(), infoElement.jsonObject)
                     OpenCodeEvent.SessionCreated(session)
                 }
                 "session.updated" -> {
-                    val session =
-                        json.decodeFromJsonElement(
-                            OpenCodeSession.serializer(),
-                            properties["info"]!!.jsonObject,
-                        )
+                    val infoElement = properties["info"] ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val session = json.decodeFromJsonElement(OpenCodeSession.serializer(), infoElement.jsonObject)
                     OpenCodeEvent.SessionUpdated(session)
                 }
-                "session.status" ->
-                    OpenCodeEvent.SessionStatusChanged(
-                        sessionId = properties["sessionID"]!!.jsonPrimitive.content,
-                        status = properties["status"]!!.jsonObject["type"]!!.jsonPrimitive.content,
-                    )
+                "session.status" -> {
+                    val sessionId = properties["sessionID"]?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    val status = properties["status"]?.jsonObject?.get("type")?.jsonPrimitive?.content ?: return@runCatching OpenCodeEvent.Unknown(type, raw)
+                    OpenCodeEvent.SessionStatusChanged(sessionId = sessionId, status = status)
+                }
                 "session.error" -> {
                     val errorObject = properties["error"] as? JsonObject
                     OpenCodeEvent.SessionError(

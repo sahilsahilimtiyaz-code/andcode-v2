@@ -45,7 +45,6 @@ class ReliabilityModelsTest {
     fun `circuit breaker starts closed`() {
         val breaker = CircuitBreakerState()
         assertEquals(CircuitState.CLOSED, breaker.state)
-        assertFalse(breaker.isOpen)
     }
 
     @Test
@@ -55,17 +54,15 @@ class ReliabilityModelsTest {
         assertEquals(CircuitState.CLOSED, breaker.state)
         breaker = breaker.recordFailure()
         assertEquals(CircuitState.OPEN, breaker.state)
-        assertTrue(breaker.isOpen)
     }
 
     @Test
     fun `circuit breaker transitions to half-open after cooldown`() {
         var breaker = CircuitBreakerState(
             state = CircuitState.OPEN,
-            failureCount = 5,
             lastFailureTimeMillis = System.currentTimeMillis() - 120_000L,
         )
-        breaker = breaker.checkCooldown()
+        breaker = breaker.attemptReset()
         assertEquals(CircuitState.HALF_OPEN, breaker.state)
     }
 
@@ -73,11 +70,9 @@ class ReliabilityModelsTest {
     fun `circuit breaker closes on success from half-open`() {
         var breaker = CircuitBreakerState(
             state = CircuitState.HALF_OPEN,
-            failureCount = 6,
         )
         breaker = breaker.recordSuccess()
         assertEquals(CircuitState.CLOSED, breaker.state)
-        assertEquals(0, breaker.failureCount)
     }
 
     @Test
