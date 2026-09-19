@@ -21,7 +21,7 @@ object SymbolExtractor {
             Regex("""^\s{4,}(\w+)\s*[({,]""", RegexOption.MULTILINE),
         ),
         SymbolKind.ANNOTATION to listOf(
-            Regex("""@(\w+)"""),
+            Regex("""annotation\s+class\s+(\w+)"""),
         ),
         SymbolKind.IMPORT to listOf(
             Regex("""import\s+([\w.]+)"""),

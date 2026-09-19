@@ -50,7 +50,7 @@ object CrashLog {
         val report =
             buildString {
                 appendLine("AndCode crash")
-                appendLine("Time: ${TIMESTAMP.format(Date())}")
+                appendLine("Time: ${SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US).format(Date())}")
                 appendLine("Thread: ${thread.name}")
                 appendLine("Android: ${Build.VERSION.RELEASE} (SDK ${Build.VERSION.SDK_INT})")
                 appendLine("Device: ${Build.MANUFACTURER} ${Build.MODEL}")
@@ -64,6 +64,5 @@ object CrashLog {
 
     private fun file(context: Context): File = File(File(context.filesDir, "diagnostics"), "last-crash.txt")
 
-    private val TIMESTAMP = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
     private const val MAX_TRACE_CHARS = 12_000
 }

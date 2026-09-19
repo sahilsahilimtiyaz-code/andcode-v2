@@ -37,6 +37,10 @@ class ProcessSupervisor(
     val isRunning: Boolean get() = currentState == ProcessState.RUNNING
 
     suspend fun start(): ProcessInfo = mutex.withLock {
+        startLocked()
+    }
+
+    private suspend fun startLocked(): ProcessInfo {
         val current = mutableInfo.value
         if (current.state == ProcessState.RUNNING || current.state == ProcessState.STARTING) {
             return current
@@ -88,31 +92,26 @@ class ProcessSupervisor(
         return mutableInfo.value
     }
 
-    suspend fun restart(): ProcessInfo {
-        mutex.lock()
-        try {
-            val current = mutableInfo.value
-            if (current.restartCount >= config.maxRestartAttempts) {
-                mutableInfo.value = mutableInfo.value.copy(
-                    exitReason = ExitReason.Unknown("Max restart attempts (${config.maxRestartAttempts}) exceeded"),
-                )
-                transitionTo(ProcessState.FAILED)
-                return mutableInfo.value
-            }
-
-            cancelBackgroundJobs()
-            transitionTo(ProcessState.RESTARTING)
-            val backoff = computeNextRestartDelay(current.restartCount, config.restartBackoffMillis)
-            delay(backoff)
+    suspend fun restart(): ProcessInfo = mutex.withLock {
+        val current = mutableInfo.value
+        if (current.restartCount >= config.maxRestartAttempts) {
             mutableInfo.value = mutableInfo.value.copy(
-                restartCount = current.restartCount + 1,
-                pid = null,
-                startedAtMillis = null,
+                exitReason = ExitReason.Unknown("Max restart attempts (${config.maxRestartAttempts}) exceeded"),
             )
-        } finally {
-            mutex.unlock()
+            transitionTo(ProcessState.FAILED)
+            return mutableInfo.value
         }
-        return start()
+
+        cancelBackgroundJobs()
+        transitionTo(ProcessState.RESTARTING)
+        val backoff = computeNextRestartDelay(current.restartCount, config.restartBackoffMillis)
+        delay(backoff)
+        mutableInfo.value = mutableInfo.value.copy(
+            restartCount = current.restartCount + 1,
+            pid = null,
+            startedAtMillis = null,
+        )
+        return startLocked()
     }
 
     suspend fun checkHealthNow(): HealthCheckResult {

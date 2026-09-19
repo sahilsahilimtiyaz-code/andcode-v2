@@ -106,7 +106,7 @@ class CheckpointManager(
 
     private fun findBackupDir(checkpoint: Checkpoint): File? {
         val missionDir = File(checkpointsDir, checkpoint.missionId)
-        return missionDir.listFiles()?.firstOrNull { it.name == checkpoint.id.substringBefore('-') }
+        return missionDir.listFiles()?.firstOrNull { it.name == checkpoint.id }
             ?: missionDir.listFiles()?.lastOrNull()
     }
 }

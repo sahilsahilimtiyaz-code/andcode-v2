@@ -11,7 +11,6 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
@@ -31,32 +30,69 @@ class AgentOrchestrator(
     private val semaphore = Semaphore(config.maxConcurrency)
 
     suspend fun orchestrate(tasks: List<AgentTask>): Map<String, AgentAssignment> {
-        val assignments = mutableMapOf<String, AgentAssignment>()
         val taskMap = tasks.associateBy { it.id }
+        val completedAssignments = mutableMapOf<String, AgentAssignment>()
 
-        coroutineScope {
-            val deferredResults = tasks.map { task ->
-                async(Dispatchers.IO) {
-                    executeWithDependencies(task, taskMap, assignments)
+        val executionOrder = topologicalSort(tasks)
+
+        for (wave in executionOrder) {
+            coroutineScope {
+                val deferredResults = wave.map { task ->
+                    async(Dispatchers.IO) {
+                        executeSingleTask(task, completedAssignments)
+                    }
+                }
+                deferredResults.awaitAll().forEach { (taskId, assignment) ->
+                    completedAssignments[taskId] = assignment
                 }
             }
-            deferredResults.awaitAll().forEach { (taskId, assignment) ->
-                assignments[taskId] = assignment
+
+            if (config.failFast && completedAssignments.values.any { it.result is MissionStepResult.Failed }) {
+                break
             }
         }
 
-        mutableAssignments.value = assignments
-        return assignments
+        mutableAssignments.value = completedAssignments
+        return completedAssignments
     }
 
-    private suspend fun executeWithDependencies(
+    private fun topologicalSort(tasks: List<AgentTask>): List<List<AgentTask>> {
+        val taskMap = tasks.associateBy { it.id }
+        val completed = mutableSetOf<String>()
+        val waves = mutableListOf<List<AgentTask>>()
+        var remaining = tasks.toList()
+
+        while (remaining.isNotEmpty()) {
+            val ready = remaining.filter { task ->
+                task.dependsOn.all { it in completed }
+            }
+            if (ready.isEmpty()) {
+                waves.add(remaining)
+                break
+            }
+            waves.add(ready)
+            completed.addAll(ready.map { it.id })
+            remaining = remaining.filter { it.id !in completed }
+        }
+
+        return waves
+    }
+
+    private suspend fun executeSingleTask(
         task: AgentTask,
-        taskMap: Map<String, AgentTask>,
-        completedAssignments: MutableMap<String, AgentAssignment>,
+        completedAssignments: Map<String, AgentAssignment>,
     ): Pair<String, AgentAssignment> {
         for (depId in task.dependsOn) {
             val depAssignment = completedAssignments[depId]
-            if (depAssignment != null && depAssignment.result is MissionStepResult.Failed) {
+            if (depAssignment == null) {
+                return task.id to AgentAssignment(
+                    task = task,
+                    agentId = "blocked",
+                    result = MissionStepResult.Failed("Dependency $depId not completed"),
+                    error = "Missing dependency",
+                )
+            }
+            if (depAssignment.result is MissionStepResult.Failed) {
                 return task.id to AgentAssignment(
                     task = task,
                     agentId = "blocked",
@@ -64,15 +100,6 @@ class AgentOrchestrator(
                     error = "Blocked by failed dependency",
                 )
             }
-        }
-
-        if (config.failFast && completedAssignments.values.any { it.result is MissionStepResult.Failed }) {
-            return task.id to AgentAssignment(
-                task = task,
-                agentId = "skipped",
-                result = MissionStepResult.Skipped,
-                error = "Skipped due to fail-fast",
-            )
         }
 
         return semaphore.withPermit {

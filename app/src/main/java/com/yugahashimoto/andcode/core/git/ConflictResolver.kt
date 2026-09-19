@@ -7,7 +7,7 @@ class ConflictResolver {
             ResolutionStrategy.TAKE_OURS -> resolveWithOurs(conflict)
             ResolutionStrategy.TAKE_THEIRS -> resolveWithTheirs(conflict)
             ResolutionStrategy.UNION -> resolveWithUnion(conflict)
-            ResolutionStrategy.MANUAL -> resolveWithOurs(conflict)
+            ResolutionStrategy.MANUAL -> conflict.rawContent
         }
         return ConflictResolution(
             filePath = conflict.filePath,
