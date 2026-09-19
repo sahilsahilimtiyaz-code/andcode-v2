@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -38,6 +37,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,13 +49,13 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yugahashimoto.andcode.core.mission.MissionProgress
 import com.yugahashimoto.andcode.core.mission.MissionStatus
+import com.yugahashimoto.andcode.ui.gestures.premium.rememberPremiumHaptics
 import com.yugahashimoto.andcode.ui.theme.premium.LocalReducedMotion
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumColorValues
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens
@@ -306,7 +306,7 @@ private fun MissionPulseIcon(
             initialValue = 0.6f,
             targetValue = 1.0f,
             animationSpec = infiniteRepeatable(
-                animation = tween(900, easing = FastOutSlowInEasing),
+                animation = tween(PremiumTokens.DurationXSlow, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Reverse,
             ),
             label = "pulseAlpha",
@@ -370,6 +370,15 @@ fun MissionProgressCard(
 
     val progressFraction = missionProgress.progressPercent / 100f
     val steps = missionProgress.toProgressStepDataList()
+    val haptics = rememberPremiumHaptics()
+
+    LaunchedEffect(missionProgress.status) {
+        when (missionProgress.status) {
+            MissionStatus.COMPLETED -> haptics.triggerSuccess()
+            MissionStatus.FAILED -> haptics.triggerLongPress()
+            else -> {}
+        }
+    }
 
     MissionProgressCard(
         title = title,

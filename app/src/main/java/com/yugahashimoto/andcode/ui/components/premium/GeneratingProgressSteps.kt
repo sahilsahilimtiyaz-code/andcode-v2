@@ -1,9 +1,6 @@
 package com.yugahashimoto.andcode.ui.components.premium
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.FastOutSlowInEasing
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
@@ -20,7 +17,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -44,7 +40,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
@@ -55,7 +50,6 @@ import androidx.compose.ui.unit.sp
 import com.yugahashimoto.andcode.core.mission.MissionProgress
 import com.yugahashimoto.andcode.core.mission.MissionStatus
 import com.yugahashimoto.andcode.core.mission.MissionStep
-import com.yugahashimoto.andcode.core.mission.MissionStepResult
 import com.yugahashimoto.andcode.ui.theme.premium.LocalReducedMotion
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumColorValues
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens

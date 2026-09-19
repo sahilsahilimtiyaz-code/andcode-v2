@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -59,7 +58,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +65,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.yugahashimoto.andcode.ui.gestures.premium.rememberPremiumHaptics
 import com.yugahashimoto.andcode.ui.theme.premium.LocalReducedMotion
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumColorValues
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens
@@ -173,6 +172,15 @@ fun StatusCard(
     val reducedMotion = LocalReducedMotion.current
     val config = remember(variant) { getVariantConfig(variant) }
     var isExpanded by remember { mutableStateOf(isInitiallyExpanded) }
+    val haptics = rememberPremiumHaptics()
+
+    LaunchedEffect(variant) {
+        when (variant) {
+            StatusCardVariant.SUCCESS -> haptics.triggerSuccess()
+            StatusCardVariant.FAILURE -> haptics.triggerLongPress()
+            else -> {}
+        }
+    }
 
     // ─────────────────────────────────────────────────────────────────────────
     // Motion: Shake animation for FAILURE (±4dp, 200ms)
@@ -187,7 +195,7 @@ fun StatusCard(
             shakeOffsetPx.animateTo(
                 targetValue = 0f,
                 animationSpec = keyframes {
-                    durationMillis = 200
+                    durationMillis = PremiumTokens.DurationFast
                     0f at 0
                     -shakeAmplitude at 30 using FastOutSlowInEasing
                     shakeAmplitude at 70 using FastOutSlowInEasing

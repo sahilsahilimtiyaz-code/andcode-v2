@@ -76,7 +76,7 @@ fun StepSegmentBar(
             initialValue = -0.5f,
             targetValue = 1.5f,
             animationSpec = infiniteRepeatable(
-                animation = tween(1200, easing = LinearEasing),
+                animation = tween(PremiumTokens.ShimmerSweep, easing = LinearEasing),
                 repeatMode = RepeatMode.Restart,
             ),
             label = "shimmerActive",

@@ -385,6 +385,7 @@ fun SettingsScreenV2(
                     contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 6.dp, bottom = 28.dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp),
                 ) {
+                    item { CreatorCreditsCard() }
                     item { settingsListContent() }
                 }
                 Surface(
@@ -404,6 +405,7 @@ fun SettingsScreenV2(
                 contentPadding = PaddingValues(start = 20.dp, end = 20.dp, top = 6.dp, bottom = 28.dp),
                 verticalArrangement = Arrangement.spacedBy(20.dp),
             ) {
+                item { CreatorCreditsCard() }
                 item { settingsListContent() }
             }
         }
