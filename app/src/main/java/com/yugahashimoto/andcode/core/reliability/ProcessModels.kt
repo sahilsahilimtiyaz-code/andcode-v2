@@ -1,5 +1,7 @@
 package com.yugahashimoto.andcode.core.reliability
 
+import kotlin.math.min
+
 enum class ProcessState {
     CREATED,
     STARTING,

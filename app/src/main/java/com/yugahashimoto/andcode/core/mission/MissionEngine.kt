@@ -41,11 +41,11 @@ class MissionEngine(
         steps: List<MissionStep> = MissionStep.ORDERED,
         startFrom: MissionStep? = null,
     ): MissionProgress = mutex.withLock {
-        val起点 = startFrom ?: steps.first()
+        val startingPoint = startFrom ?: steps.first()
         mutableProgress.value = MissionProgress(
             missionId = missionId,
             status = MissionStatus.RUNNING,
-            currentStep = 起点,
+            currentStep = startingPoint,
             startedAtMillis = System.currentTimeMillis(),
         )
 
@@ -208,5 +208,5 @@ class MissionEngine(
     }
 
     private fun computeRetryDelay(attempt: Int): Long =
-        (1000L * Math.pow(2.0, attempt.toDouble())).coerceAtMost(30_000L)
+        (1000L * Math.pow(2.0, attempt.toDouble())).toLong().coerceAtMost(30_000L)
 }

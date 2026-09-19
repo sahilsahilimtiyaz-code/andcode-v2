@@ -17,13 +17,16 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.geometry.center
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.asComposePaint
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
@@ -32,7 +35,9 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 // ─────────────────────────────────────────────────────────────────────────────
+//
 // Glass Panel
+//
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -62,7 +67,9 @@ fun Modifier.glassPanel(
         .border(width = borderWidth, color = borderColor, shape = shape)
 
 // ─────────────────────────────────────────────────────────────────────────────
+//
 // Glow Shadow
+//
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -109,7 +116,9 @@ fun Modifier.glowShadow(
     }
 
 // ─────────────────────────────────────────────────────────────────────────────
+//
 // Neon Border (static)
+//
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -138,7 +147,9 @@ fun Modifier.neonBorder(
     )
 
 // ─────────────────────────────────────────────────────────────────────────────
+//
 // Neon Border Sweep (animated – PASS 2)
+//
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -183,11 +194,18 @@ fun Modifier.neonBorderAnimated(
                 label = "neonBorderAngle",
             )
 
+            val cornerPx = remember(shape) {
+                when {
+                    shape is RoundedCornerShape -> 20f
+                    else -> 0f
+                }
+            }
+
             drawBehind {
                 val angleRad = Math.toRadians(angleDeg.toDouble())
                 val halfW = size.width / 2f
                 val halfH = size.height / 2f
-                val radius = maxOf(halfW, halfH) * 1.42f  // half-diagonal
+                val radius = maxOf(halfW, halfH) * 1.42f
 
                 val start = Offset(
                     x = center.x + (radius * cos(angleRad)).toFloat(),
@@ -205,36 +223,24 @@ fun Modifier.neonBorderAnimated(
                 )
 
                 val strokeWidthPx = borderWidth.toPx()
-                val cornerPx = remember(shape) {
-                    when {
-                        shape is RoundedCornerShape -> 20f  // approximation
-                        else -> 0f
-                    }
-                }
-                drawIntoCanvas { canvas ->
-                    val paint = android.graphics.Paint().apply {
-                        isAntiAlias = true
-                        style = android.graphics.Paint.Style.STROKE
-                        strokeWidth = strokeWidthPx
-                    }.asComposePaint().apply {
-                        brush = strokeBrush
-                    }
-                    canvas.drawRoundRect(
-                        left = strokeWidthPx / 2f,
-                        top = strokeWidthPx / 2f,
-                        right = size.width - strokeWidthPx / 2f,
-                        bottom = size.height - strokeWidthPx / 2f,
-                        radiusX = cornerPx,
-                        radiusY = cornerPx,
-                        paint = paint,
-                    )
-                }
+                drawRoundRect(
+                    brush = strokeBrush,
+                    topLeft = Offset(strokeWidthPx / 2f, strokeWidthPx / 2f),
+                    size = Size(
+                        size.width - strokeWidthPx,
+                        size.height - strokeWidthPx,
+                    ),
+                    cornerRadius = CornerRadius(cornerPx, cornerPx),
+                    style = Stroke(width = strokeWidthPx),
+                )
             }
         }
     }
 
 // ─────────────────────────────────────────────────────────────────────────────
+//
 // Shimmer Overlay (for text / card reveals)
+//
 // ─────────────────────────────────────────────────────────────────────────────
 
 /**
@@ -284,7 +290,9 @@ fun Modifier.shimmerLoop(
     }
 
 // ─────────────────────────────────────────────────────────────────────────────
+//
 // Convenience: Glass Card layout padding
+//
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Standard inner padding for glass-panel cards. */

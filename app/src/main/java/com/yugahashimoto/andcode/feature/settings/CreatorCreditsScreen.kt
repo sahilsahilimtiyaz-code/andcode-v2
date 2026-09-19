@@ -35,7 +35,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.yugahashimoto.andcode.ui.theme.AndCodeTheme
@@ -97,19 +100,26 @@ fun CreatorCreditsCard(
             }
 
             Text(
-                text = "Sahil (Octavian)",
+                text = buildAnnotatedString {
+                    withStyle(
+                        SpanStyle(
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    PremiumColorValues.NeonBlue,
+                                    PremiumColorValues.ElectricPurple,
+                                    PremiumColorValues.NeonBlue,
+                                ),
+                                start = Offset(x = shimmerX * 300f, y = 0f),
+                                end = Offset(x = shimmerX * 300f + 300f, y = 100f),
+                                tileMode = TileMode.Clamp,
+                            ),
+                        ),
+                    ) {
+                        append("Sahil (Octavian)")
+                    }
+                },
                 style = MaterialTheme.typography.headlineSmall,
                 fontWeight = FontWeight.Bold,
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        PremiumColorValues.NeonBlue,
-                        PremiumColorValues.ElectricPurple,
-                        PremiumColorValues.NeonBlue,
-                    ),
-                    start = Offset(x = shimmerX * 300f, y = 0f),
-                    end = Offset(x = shimmerX * 300f + 300f, y = 100f),
-                    tileMode = TileMode.Clamp,
-                ),
             )
 
             Spacer(modifier = Modifier.height(4.dp))
