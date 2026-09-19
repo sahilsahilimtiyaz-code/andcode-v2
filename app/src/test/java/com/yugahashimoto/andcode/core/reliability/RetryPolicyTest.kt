@@ -2,7 +2,7 @@ package com.yugahashimoto.andcode.core.reliability
 
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class RetryPolicyTest {
@@ -13,8 +13,8 @@ class RetryPolicyTest {
         val d1 = policy.delayForAttempt(1)
         val d2 = policy.delayForAttempt(2)
         val d3 = policy.delayForAttempt(3)
-        assert(d1 < d2) { "Attempt 2 delay ($d2) should be greater than attempt 1 ($d1)" }
-        assert(d2 < d3) { "Attempt 3 delay ($d3) should be greater than attempt 2 ($d2)" }
+        assertTrue("Attempt 2 delay ($d2) should be greater than attempt 1 ($d1)", d1 < d2)
+        assertTrue("Attempt 3 delay ($d3) should be greater than attempt 2 ($d2)", d2 < d3)
     }
 
     @Test
@@ -26,7 +26,7 @@ class RetryPolicyTest {
             jitter = false,
         )
         val delay = policy.delayForAttempt(10)
-        assert(delay <= 5000) { "Delay ($delay) exceeded max (5000)" }
+        assertTrue("Delay ($delay) exceeded max (5000)", delay <= 5000)
     }
 
     @Test
@@ -34,7 +34,7 @@ class RetryPolicyTest {
         val policy = RetryPolicy(baseDelayMillis = 1000, jitter = true)
         val delays = (1..10).map { policy.delayForAttempt(2) }
         val unique = delays.toSet()
-        assert(unique.size > 1) { "Jitter should produce varying delays, got: $delays" }
+        assertTrue("Jitter should produce varying delays, got: $delays", unique.size > 1)
     }
 
     @Test
@@ -66,6 +66,6 @@ class RetryPolicyTest {
         } catch (e: RuntimeException) {
             threw = true
         }
-        assert(threw) { "Expected RuntimeException to be thrown" }
+        assertTrue("Expected RuntimeException to be thrown", threw)
     }
 }

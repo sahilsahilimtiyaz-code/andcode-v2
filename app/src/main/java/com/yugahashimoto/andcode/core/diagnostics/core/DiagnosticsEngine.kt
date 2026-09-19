@@ -213,8 +213,8 @@ class DiagnosticsEngine(
     private suspend fun checkDependencies(): HealthCheck {
         val start = System.currentTimeMillis()
         return try {
-            val (_, gradleCheck) = commandRunner("which gradle || test -f ./gradlew && echo gradlew-found || echo none", null, 5_000)
-            val hasGradle = gradleCheck.trim().contains("gradlew-found") || gradleCheck.trim().contains("/gradle")
+            val (_, gradleCheck) = commandRunner("(which gradle 2>/dev/null && echo gradle-found) || (test -f ./gradlew && echo gradlew-found) || echo none", null, 5_000)
+            val hasGradle = gradleCheck.trim().let { it.contains("gradle-found") || it.contains("gradlew-found") }
             HealthCheck(
                 id = "dependency_check",
                 name = "Build Dependencies",

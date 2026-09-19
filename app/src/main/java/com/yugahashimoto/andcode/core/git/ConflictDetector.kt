@@ -21,7 +21,7 @@ object ConflictDetector {
                     oursLines.add(lines[i])
                     i++
                 }
-                i // skip separator
+                i++ // skip separator
 
                 val theirsLines = mutableListOf<String>()
                 i++

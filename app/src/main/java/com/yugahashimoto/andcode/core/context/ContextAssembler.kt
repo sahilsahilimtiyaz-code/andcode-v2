@@ -73,7 +73,7 @@ class ContextAssembler(
         return AssembledContext(
             snippets = snippets,
             totalTokens = totalTokens,
-            budgetUsed = totalTokens.toDouble() / budget.maxTokens,
+            budgetUsed = if (budget.maxTokens > 0) totalTokens.toDouble() / budget.maxTokens else 0.0,
             sourceTokenCounts = sourceTokens,
             droppedSnippets = (droppedConversation + droppedFiles).coerceAtLeast(0),
         )

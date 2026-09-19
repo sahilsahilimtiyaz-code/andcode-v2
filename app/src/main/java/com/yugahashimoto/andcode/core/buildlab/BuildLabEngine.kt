@@ -117,7 +117,6 @@ class BuildLabEngine(
                 val taskName = trimmed.removePrefix("> Task :").trim()
                 val cached = trimmed.contains("FROM-CACHE") || trimmed.contains("up-to-date")
                 val upToDate = trimmed.contains("up-to-date")
-                if (cached) tasksFromCache++
                 if (upToDate) tasksUpToDate++
                 taskTimings.add(TaskTiming(taskName, 0L, cached || upToDate))
             }

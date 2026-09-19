@@ -2,7 +2,7 @@ package com.yugahashimoto.andcode.core.mission
 
 import com.yugahashimoto.andcode.core.api.OpenCodeProvider
 import com.yugahashimoto.andcode.core.api.OpenCodeModel
-import com.yugahashimoto.andcode.core.api.ModelLimit
+import com.yugahashimoto.andcode.core.api.OpenCodeModelLimit
 import com.yugahashimoto.andcode.core.api.ProviderCatalog
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -19,12 +19,12 @@ class ModelRouterTest {
                     "claude-sonnet" to OpenCodeModel(
                         id = "claude-sonnet",
                         name = "Claude Sonnet",
-                        limit = ModelLimit(context = 200_000, input = 180_000, output = 20_000),
+                        limit = OpenCodeModelLimit(context = 200_000, input = 180_000, output = 20_000),
                     ),
                     "claude-haiku" to OpenCodeModel(
                         id = "claude-haiku",
                         name = "Claude Haiku",
-                        limit = ModelLimit(context = 100_000),
+                        limit = OpenCodeModelLimit(context = 100_000),
                     ),
                 ),
             ),
@@ -35,7 +35,7 @@ class ModelRouterTest {
                     "gpt-4o" to OpenCodeModel(
                         id = "gpt-4o",
                         name = "GPT-4o",
-                        limit = ModelLimit(context = 128_000),
+                        limit = OpenCodeModelLimit(context = 128_000),
                     ),
                 ),
             ),

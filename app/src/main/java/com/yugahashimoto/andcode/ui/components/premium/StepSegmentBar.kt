@@ -101,8 +101,8 @@ fun StepSegmentBar(
             }
 
             val animatedSegmentProgress by animateFloatAsState(
-                targetValue = if (reducedMotion) rawSegmentProgress else rawSegmentProgress,
-                animationSpec = PremiumTokens.tweenFast(),
+                targetValue = rawSegmentProgress,
+                animationSpec = if (reducedMotion) tween(0) else PremiumTokens.tweenFast(),
                 label = "segmentProgress_$i",
             )
 

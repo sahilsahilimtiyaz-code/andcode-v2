@@ -3,26 +3,6 @@ package com.yugahashimoto.andcode.core.reliability
 import kotlin.math.min
 import kotlin.random.Random
 
-data class RetryPolicy(
-    val maxAttempts: Int = 3,
-    val baseDelayMillis: Long = 1000L,
-    val maxDelayMillis: Long = 120_000L,
-    val backoffMultiplier: Double = 2.0,
-    val jitter: Boolean = true,
-) {
-    fun delayForAttempt(attempt: Int): Long {
-        if (attempt <= 0) return 0L
-        val exponential = baseDelayMillis * Math.pow(backoffMultiplier, (attempt - 1).toDouble())
-        val capped = min(exponential.toLong(), maxDelayMillis)
-        return if (jitter) {
-            val half = capped / 2
-            capped - half + Random.nextLong(half + 1)
-        } else {
-            capped
-        }
-    }
-}
-
 enum class CircuitState { CLOSED, OPEN, HALF_OPEN }
 
 data class CircuitBreakerConfig(
@@ -36,44 +16,47 @@ data class CircuitBreakerState(
     val failureCount: Int = 0,
     val successCount: Int = 0,
     val lastFailureTimeMillis: Long = 0L,
+    private val failureThreshold: Int = 5,
+    private val resetTimeoutMillis: Long = 60_000L,
+    private val successThreshold: Int = 3,
 ) {
     val isOpen: Boolean get() = state == CircuitState.OPEN
 
-    fun recordSuccess(): CircuitBreakerState =
-        when (state) {
-            CircuitState.HALF_OPEN -> copy(
-                state = CircuitState.CLOSED,
-                failureCount = 0,
-                successCount = successCount + 1,
-            )
-            CircuitState.CLOSED -> copy(successCount = successCount + 1)
-            CircuitState.OPEN -> this
+    fun recordSuccess(): CircuitBreakerState = when (state) {
+        CircuitState.HALF_OPEN -> if (successCount + 1 >= successThreshold) {
+            copy(state = CircuitState.CLOSED, failureCount = 0, successCount = 0)
+        } else {
+            copy(successCount = successCount + 1)
         }
+        CircuitState.OPEN -> this
+        CircuitState.CLOSED -> copy(successCount = successCount + 1)
+    }
 
-    fun recordFailure(nowMillis: Long = System.currentTimeMillis()): CircuitBreakerState =
-        when (state) {
-            CircuitState.CLOSED -> {
-                val newCount = failureCount + 1
-                if (newCount >= 5) {
-                    copy(state = CircuitState.OPEN, failureCount = newCount, lastFailureTimeMillis = nowMillis)
-                } else {
-                    copy(failureCount = newCount)
-                }
+    fun recordFailure(nowMillis: Long = System.currentTimeMillis()): CircuitBreakerState = when (state) {
+        CircuitState.HALF_OPEN -> copy(
+            state = CircuitState.OPEN,
+            failureCount = failureCount + 1,
+            lastFailureTimeMillis = nowMillis,
+        )
+        CircuitState.CLOSED -> {
+            val newCount = failureCount + 1
+            if (newCount >= failureThreshold) {
+                copy(state = CircuitState.OPEN, failureCount = newCount, lastFailureTimeMillis = nowMillis)
+            } else {
+                copy(failureCount = newCount)
             }
-            CircuitState.HALF_OPEN -> copy(
-                state = CircuitState.OPEN,
-                failureCount = failureCount + 1,
-                lastFailureTimeMillis = nowMillis,
-            )
-            CircuitState.OPEN -> copy(lastFailureTimeMillis = nowMillis)
         }
+        CircuitState.OPEN -> copy(lastFailureTimeMillis = nowMillis)
+    }
 
     fun checkCooldown(nowMillis: Long = System.currentTimeMillis()): CircuitBreakerState =
-        if (state == CircuitState.OPEN && nowMillis - lastFailureTimeMillis >= 60_000L) {
+        if (state == CircuitState.OPEN && nowMillis - lastFailureTimeMillis >= resetTimeoutMillis) {
             copy(state = CircuitState.HALF_OPEN, successCount = 0)
         } else {
             this
         }
+
+    fun attemptReset(): CircuitBreakerState = checkCooldown()
 }
 
 sealed class ErrorClass {

@@ -142,6 +142,7 @@ data class OpenCodeModel(
 @Serializable
 data class OpenCodeModelLimit(
     val context: Long = 0L,
+    val input: Long = 0L,
     val output: Long = 0L,
 )
 

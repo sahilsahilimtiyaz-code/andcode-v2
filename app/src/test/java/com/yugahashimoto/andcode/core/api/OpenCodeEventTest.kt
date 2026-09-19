@@ -7,20 +7,20 @@ import org.junit.Test
 class OpenCodeEventTest {
 
     @Test
-    fun `MessageInfo default role is assistant`() {
-        val msg = MessageInfo(id = "1", sessionId = "s1")
+    fun `OpenCodeMessageInfo default role is assistant`() {
+        val msg = OpenCodeMessageInfo(id = "1", sessionId = "s1", role = "assistant")
         assertEquals("assistant", msg.role)
     }
 
     @Test
-    fun `MessagePartInfo default type is text`() {
-        val part = MessagePartInfo(id = "p1", sessionId = "s1", messageId = "m1")
+    fun `OpenCodePart default type is text`() {
+        val part = OpenCodePart(id = "p1", sessionId = "s1", messageId = "m1", type = "text")
         assertEquals("text", part.type)
     }
 
     @Test
-    fun `ModelLimit defaults to zero`() {
-        val limit = ModelLimit()
+    fun `OpenCodeModelLimit defaults to zero`() {
+        val limit = OpenCodeModelLimit()
         assertEquals(0L, limit.context)
         assertEquals(0L, limit.input)
         assertEquals(0L, limit.output)

@@ -39,9 +39,10 @@ data class StepResult(
 
 data class VerifyReport(
     val results: List<StepResult> = emptyList(),
-    val totalViolations: Int = results.sumOf { it.violations.size },
-    val totalTestFailures: Int = results.sumOf { r -> r.testResults.count { !it.passed } },
-    val totalTests: Int = results.sumOf { it.testResults.size },
-    val isSuccessful: Boolean = results.all { it.success },
-    val durationMillis: Long = results.sumOf { it.durationMillis },
-)
+) {
+    val totalViolations: Int get() = results.sumOf { it.violations.size }
+    val totalTestFailures: Int get() = results.sumOf { r -> r.testResults.count { !it.passed } }
+    val totalTests: Int get() = results.sumOf { it.testResults.size }
+    val isSuccessful: Boolean get() = results.all { it.success }
+    val durationMillis: Long get() = results.sumOf { it.durationMillis }
+}
