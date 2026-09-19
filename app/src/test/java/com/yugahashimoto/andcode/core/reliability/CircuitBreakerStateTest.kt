@@ -43,7 +43,7 @@ class CircuitBreakerStateTest {
     fun `attempts reset moves to HALF_OPEN`() {
         val breaker = CircuitBreakerState().copy(
             state = CircuitState.OPEN,
-            lastFailureMillis = System.currentTimeMillis() - 120_000,
+            lastFailureTimeMillis = System.currentTimeMillis() - 120_000,
         ).attemptReset()
         assertEquals(CircuitState.HALF_OPEN, breaker.state)
     }
@@ -52,7 +52,7 @@ class CircuitBreakerStateTest {
     fun `stays OPEN if reset timeout not elapsed`() {
         val breaker = CircuitBreakerState().copy(
             state = CircuitState.OPEN,
-            lastFailureMillis = System.currentTimeMillis(),
+            lastFailureTimeMillis = System.currentTimeMillis(),
         ).attemptReset()
         assertEquals(CircuitState.OPEN, breaker.state)
     }
@@ -76,7 +76,7 @@ class CircuitBreakerStateTest {
     fun `ignores success while OPEN`() {
         val breaker = CircuitBreakerState().copy(
             state = CircuitState.OPEN,
-            lastFailureMillis = System.currentTimeMillis(),
+            lastFailureTimeMillis = System.currentTimeMillis(),
         ).recordSuccess()
         assertEquals(CircuitState.OPEN, breaker.state)
     }
