@@ -109,12 +109,12 @@ class WorkspaceEngine(
     suspend fun detectGitStatus(workspaceId: String): Workspace? {
         val ws = workspaces[workspaceId] ?: return null
         return try {
-            val (branchOutput, _) = commandRunner("git branch --show-current", ws.rootPath, 5_000)
-            val (statusOutput, _) = commandRunner("git status --porcelain", ws.rootPath, 5_000)
-            val (remoteOutput, _) = commandRunner("git remote get-url origin", ws.rootPath, 5_000)
-            val dirty = statusOutput.isNotBlank()
-            val branch = branchOutput.trim().ifBlank { null }
-            val remote = remoteOutput.trim().ifBlank { null }
+            val branchResult = commandRunner("git branch --show-current", ws.rootPath, 5_000)
+            val statusResult = commandRunner("git status --porcelain", ws.rootPath, 5_000)
+            val remoteResult = commandRunner("git remote get-url origin", ws.rootPath, 5_000)
+            val dirty = statusResult.second.isNotBlank()
+            val branch = branchResult.second.trim().ifBlank { null }
+            val remote = remoteResult.second.trim().ifBlank { null }
             val updated = ws.copy(
                 gitBranch = branch,
                 gitRemoteUrl = remote,
@@ -130,8 +130,8 @@ class WorkspaceEngine(
     suspend fun listFiles(workspaceId: String, path: String = "."): List<String> {
         val ws = workspaces[workspaceId] ?: return emptyList()
         return try {
-            val (output, _) = commandRunner("find $path -maxdepth 1 -type f", ws.rootPath, 10_000)
-            output.lines().filter { it.isNotBlank() }
+            val result = commandRunner("find $path -maxdepth 1 -type f", ws.rootPath, 10_000)
+            result.second.lines().filter { it.isNotBlank() }
         } catch (e: Exception) {
             emptyList()
         }

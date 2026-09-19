@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.asComposePaint
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.unit.Dp
@@ -85,18 +86,16 @@ fun Modifier.glowShadow(
     else drawBehind {
         val radiusPx = radius.toPx()
         drawIntoCanvas { canvas ->
-            val paint = Paint().apply {
-                asFrameworkPaint().apply {
-                    isAntiAlias = true
-                    color = android.graphics.Color.TRANSPARENT
-                    setShadowLayer(
-                        radiusPx,
-                        0f,
-                        0f,
-                        glowColor.copy(alpha = 0.8f).toArgb(),
-                    )
-                }
-            }
+            val paint = android.graphics.Paint().apply {
+                isAntiAlias = true
+                color = android.graphics.Color.TRANSPARENT
+                setShadowLayer(
+                    radiusPx,
+                    0f,
+                    0f,
+                    glowColor.copy(alpha = 0.8f).toArgb(),
+                )
+            }.asComposePaint()
             canvas.drawRoundRect(
                 left = 0f,
                 top = 0f,
@@ -213,12 +212,11 @@ fun Modifier.neonBorderAnimated(
                     }
                 }
                 drawIntoCanvas { canvas ->
-                    val framePaint = Paint().apply {
-                        asFrameworkPaint().apply {
-                            isAntiAlias = true
-                            style = android.graphics.Paint.Style.STROKE
-                            strokeWidth = strokeWidthPx
-                        }
+                    val paint = android.graphics.Paint().apply {
+                        isAntiAlias = true
+                        style = android.graphics.Paint.Style.STROKE
+                        strokeWidth = strokeWidthPx
+                    }.asComposePaint().apply {
                         brush = strokeBrush
                     }
                     canvas.drawRoundRect(
@@ -228,7 +226,7 @@ fun Modifier.neonBorderAnimated(
                         bottom = size.height - strokeWidthPx / 2f,
                         radiusX = cornerPx,
                         radiusY = cornerPx,
-                        paint = framePaint,
+                        paint = paint,
                     )
                 }
             }
