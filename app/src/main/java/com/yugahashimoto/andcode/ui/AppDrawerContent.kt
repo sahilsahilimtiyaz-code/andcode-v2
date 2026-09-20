@@ -27,9 +27,13 @@ import androidx.compose.material.icons.filled.Archive
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Speed
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.HorizontalDivider
@@ -262,6 +266,57 @@ fun AppDrawerContent(
                 icon = Icons.Default.Settings,
                 label = stringResource(R.string.nav_settings),
                 onClick = { onNavigate("settings") },
+            )
+            // Premium feature destinations
+            DrawerDestinationRow(
+                icon = Icons.Default.Favorite,
+                label = "Missions",
+                onClick = { onNavigate("missions") },
+            )
+            DrawerDestinationRow(
+                icon = Icons.Default.Build,
+                label = "Build Lab",
+                onClick = { onNavigate("build-lab") },
+            )
+            DrawerDestinationRow(
+                icon = Icons.Default.Speed,
+                label = "Performance",
+                onClick = { onNavigate("performance-monitor") },
+            )
+            DrawerDestinationRow(
+                icon = Icons.Default.SmartToy,
+                label = "AI Team",
+                onClick = { onNavigate("ai-team-settings") },
+            )
+            DrawerDestinationRow(
+                icon = Icons.Default.Code,
+                label = "Model Router",
+                onClick = { onNavigate("model-router") },
+            )
+            DrawerDestinationRow(
+                icon = Icons.Default.Folder,
+                label = "Project Index",
+                onClick = { onNavigate("project-index") },
+            )
+            DrawerDestinationRow(
+                icon = Icons.Default.BugReport,
+                label = "Build Doctor",
+                onClick = { onNavigate("build-doctor") },
+            )
+            DrawerDestinationRow(
+                icon = Icons.Default.Terminal,
+                label = "Advanced Git",
+                onClick = { onNavigate("advanced-git") },
+            )
+            DrawerDestinationRow(
+                icon = Icons.Default.Star,
+                label = "Plugins",
+                onClick = { onNavigate("plugins") },
+            )
+            DrawerDestinationRow(
+                icon = Icons.Default.Info,
+                label = "Help",
+                onClick = { onNavigate("help") },
             )
             Spacer(Modifier.padding(bottom = 3.dp))
         }
