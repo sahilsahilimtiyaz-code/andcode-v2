@@ -67,4 +67,16 @@ fun decodeRouteArg(value: String): String = String(Base64.getUrlDecoder().decode
 private fun encodeRouteArg(value: String): String =
     Base64.getUrlEncoder().withoutPadding().encodeToString(value.toByteArray(Charsets.UTF_8))
 
+// Premium feature routes
+const val ROUTE_MISSIONS = "missions"
+const val ROUTE_BUILD_LAB = "build-lab"
+const val ROUTE_PERFORMANCE_MONITOR = "performance-monitor"
+const val ROUTE_AI_TEAM_SETTINGS = "ai-team-settings"
+const val ROUTE_MODEL_ROUTER = "model-router"
+const val ROUTE_PROJECT_INDEX = "project-index"
+const val ROUTE_BUILD_DOCTOR = "build-doctor"
+const val ROUTE_ADVANCED_GIT = "advanced-git"
+const val ROUTE_PLUGINS = "plugins"
+const val ROUTE_HELP = "help"
+
 val DRAWER_ROOT_ROUTES = setOf(ROUTE_CHAT, ROUTE_SETTINGS, ROUTE_SCHEDULES)

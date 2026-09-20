@@ -88,6 +88,16 @@ fun SettingsScreenV2(
     onOpenMcp: () -> Unit = {},
     onOpenServerInfo: () -> Unit = {},
     onOpenLegal: () -> Unit = {},
+    onOpenMissions: () -> Unit = {},
+    onOpenBuildLab: () -> Unit = {},
+    onOpenPerformanceMonitor: () -> Unit = {},
+    onOpenAiTeamSettings: () -> Unit = {},
+    onOpenModelRouter: () -> Unit = {},
+    onOpenProjectIndex: () -> Unit = {},
+    onOpenBuildDoctor: () -> Unit = {},
+    onOpenAdvancedGit: () -> Unit = {},
+    onOpenPlugins: () -> Unit = {},
+    onOpenHelp: () -> Unit = {},
     currentTheme: String = "dark",
     onThemeChange: (String) -> Unit = {},
     currentLanguage: String = "system",
@@ -148,6 +158,11 @@ fun SettingsScreenV2(
         )
 
         val settingsListContent: @Composable () -> Unit = {
+            // Creator Credits at the top
+            com.yugahashimoto.andcode.feature.premium.CreatorCreditsScreen(
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
             SettingsSection(title = stringResource(R.string.section_assistant_settings)) {
                 SettingsRow(
                     icon = Icons.Default.Home,
@@ -332,6 +347,67 @@ fun SettingsScreenV2(
                     icon = Icons.Default.Folder,
                     title = stringResource(R.string.settings_workspace_row),
                     onClick = onOpenWorkspaces,
+                )
+                // Premium feature rows
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.Favorite,
+                    title = "Missions",
+                    onClick = onOpenMissions,
+                )
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.Build,
+                    title = "Build Lab",
+                    onClick = onOpenBuildLab,
+                )
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.Speed,
+                    title = "Performance Monitor",
+                    onClick = onOpenPerformanceMonitor,
+                )
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.SmartToy,
+                    title = "AI Team Settings",
+                    onClick = onOpenAiTeamSettings,
+                )
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.Code,
+                    title = "Model Router",
+                    onClick = onOpenModelRouter,
+                )
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.Folder,
+                    title = "Project Index",
+                    onClick = onOpenProjectIndex,
+                )
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.BugReport,
+                    title = "Build Doctor",
+                    onClick = onOpenBuildDoctor,
+                )
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.Terminal,
+                    title = "Advanced Git",
+                    onClick = onOpenAdvancedGit,
+                )
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.Star,
+                    title = "Plugins",
+                    onClick = onOpenPlugins,
+                )
+                SettingsDivider()
+                SettingsRow(
+                    icon = Icons.Default.Info,
+                    title = "Help & Documentation",
+                    onClick = onOpenHelp,
                 )
             }
 
