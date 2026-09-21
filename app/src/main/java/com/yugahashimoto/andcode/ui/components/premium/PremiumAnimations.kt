@@ -7,9 +7,12 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,6 +33,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import kotlin.math.max
 import kotlin.math.min
@@ -146,21 +150,45 @@ fun PremiumButton(
     contentPadding: androidx.compose.foundation.layout.PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit,
 ) {
-    val interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
+    val pressScale = remember { mutableStateOf(1f) }
+    val buttonContent = content
 
     Button(
-        onClick = onClick,
+        onClick = {
+            if (enabled) onClick()
+        },
         modifier = modifier
             .graphicsLayer {
-                scaleX = if (isPressed) 0.98f else 1f
-                scaleY = if (isPressed) 0.98f else 1f
+                scaleX = pressScale.value
+                scaleY = pressScale.value
+            }
+            .pointerInput(enabled) {
+                detectTapGestures(
+                    onPress = {
+                        pressScale.value = 0.98f
+                        try {
+                            awaitRelease()
+                        } finally {
+                            pressScale.value = 1f
+                        }
+                    },
+                )
             },
         enabled = enabled,
         colors = colors,
         contentPadding = contentPadding,
-        interactionSource = interactionSource,
     ) {
-        content()
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    color = if (enabled) PremiumColorValues.NeonBlue.copy(alpha = 0.08f) else Color.Transparent,
+                    shape = RoundedCornerShape(PremiumTokens.RadiusPill),
+                ),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            buttonContent()
+        }
     }
 }

@@ -97,7 +97,7 @@ fun TypingIndicator(
                     val borderColor = Color.White.copy(alpha = 0.15f)
                     drawRoundRect(
                         color = glassColor,
-                        size = this.size.toSize(),
+                        size = size,
                         cornerRadius = CornerRadius(
                             x = PremiumTokens.RadiusPill.toPx(),
                             y = PremiumTokens.RadiusPill.toPx(),
@@ -105,7 +105,7 @@ fun TypingIndicator(
                     )
                     drawRoundRect(
                         color = borderColor,
-                        size = this.size.toSize(),
+                        size = size,
                         cornerRadius = CornerRadius(
                             x = PremiumTokens.RadiusPill.toPx(),
                             y = PremiumTokens.RadiusPill.toPx(),
@@ -115,7 +115,7 @@ fun TypingIndicator(
                     // Subtle inner glow
                     drawRoundRect(
                         color = neonBlue.copy(alpha = 0.03f),
-                        size = this.size.toSize(),
+                        size = size,
                         cornerRadius = CornerRadius(
                             x = PremiumTokens.RadiusPill.toPx(),
                             y = PremiumTokens.RadiusPill.toPx(),
