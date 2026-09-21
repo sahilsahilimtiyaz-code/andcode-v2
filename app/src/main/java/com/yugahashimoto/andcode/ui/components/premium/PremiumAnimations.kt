@@ -31,6 +31,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Stroke
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
@@ -110,6 +112,8 @@ fun LayeredShadowCard(
             .clip(RoundedCornerShape(PremiumTokens.RadiusLarge))
             .drawBehind {
                 // Layered shadows for depth
+                val largeRadius = PremiumTokens.RadiusLarge.toPx()
+                val cornerRadius = CornerRadius(largeRadius, largeRadius)
                 repeat(elevationLevel) { i ->
                     val offset = (i + 1) * 4
                     val alpha = 0.03f + i * 0.02f
@@ -117,10 +121,7 @@ fun LayeredShadowCard(
                         color = shadowColor.copy(alpha = alpha),
                         topLeft = Offset(offset.dp.toPx(), offset.dp.toPx()),
                         size = Size(size.width, size.height),
-                        cornerRadius = CornerRadius(
-                            x = PremiumTokens.RadiusLarge.toPx(),
-                            y = PremiumTokens.RadiusLarge.toPx(),
-                        ),
+                        cornerRadius = cornerRadius,
                     )
                 }
             },

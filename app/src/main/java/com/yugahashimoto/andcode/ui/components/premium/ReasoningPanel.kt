@@ -49,10 +49,9 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathMeasure
-import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.Stroke
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.DrawScope
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -114,13 +113,12 @@ fun ReasoningPanel(
             .clip(RoundedCornerShape(PremiumTokens.RadiusLarge))
             .drawBehind {
                 val glowColor = PremiumColorValues.NeonBlue.copy(alpha = 0.08f * glowAnim.value)
+                val largeRadius = PremiumTokens.RadiusLarge.toPx()
+                val cornerRadius = CornerRadius(largeRadius, largeRadius)
                 drawRoundRect(
                     color = glowColor,
                     size = size,
-                    cornerRadius = CornerRadius(
-                        x = PremiumTokens.RadiusLarge.toPx(),
-                        y = PremiumTokens.RadiusLarge.toPx(),
-                    ),
+                    cornerRadius = cornerRadius,
                     style = Stroke(width = 2.dp.toPx()),
                 )
             },

@@ -62,19 +62,19 @@ fun TypingIndicatorDots(
             color = dotColor.copy(alpha = dot1Alpha),
             topLeft = Offset(startX, centerY - dotSize / 2),
             size = Size(dotSize, dotSize),
-            cornerRadius = CornerRadius(dotSize / 2)
+            cornerRadius = CornerRadius(dotSize / 2, dotSize / 2)
         )
         drawRoundRect(
             color = dotColor.copy(alpha = dot2Alpha),
             topLeft = Offset(startX + dotSize + spacing, centerY - dotSize / 2),
             size = Size(dotSize, dotSize),
-            cornerRadius = CornerRadius(dotSize / 2)
+            cornerRadius = CornerRadius(dotSize / 2, dotSize / 2)
         )
         drawRoundRect(
             color = dotColor.copy(alpha = dot3Alpha),
             topLeft = Offset(startX + (dotSize + spacing) * 2, centerY - dotSize / 2),
             size = Size(dotSize, dotSize),
-            cornerRadius = CornerRadius(dotSize / 2)
+            cornerRadius = CornerRadius(dotSize / 2, dotSize / 2)
         )
     }
 }
