@@ -14,6 +14,7 @@ import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -97,7 +98,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -258,7 +258,7 @@ fun ChatHomeScreen(
     var legacyDownload by remember { mutableStateOf<ChatImageSource?>(null) }
     val timelineEntries = remember(state.messages) { groupConversationTimeline(state.messages) }
     val messageAnimationStates = remember { mutableStateMapOf<String, Boolean>() }
-    val revealedMessageIds = remember { mutableStateSetOf<String>() }
+    val revealedMessageIds = remember { mutableStateMapOf<String, Boolean>() }
     val clipboardManager = LocalClipboardManager.current
     val coroutineScope = rememberCoroutineScope()
     var showSlashCommands by remember { mutableStateOf(false) }
@@ -488,10 +488,10 @@ fun ChatHomeScreen(
                                         is TimelineEntry.Footer -> entry.id
                                     }
                                     val animationKey = messageId ?: entry.id
-                                    val isNewMessage = messageId != null && messageId !in revealedMessageIds
+                                    val isNewMessage = messageId != null && revealedMessageIds[messageId] != true
 
                                     if (isNewMessage) {
-                                        revealedMessageIds += messageId!!
+                                        revealedMessageIds[messageId!!] = true
                                     }
 
                                     AnimatedVisibility(

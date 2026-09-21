@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import com.yugahashimoto.andcode.ui.theme.premium.LocalReducedMotion
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumColorValues
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens
+import com.yugahashimoto.andcode.ui.theme.premium.rememberReducedMotion
 import kotlin.math.max
 
 @Composable
@@ -43,7 +44,7 @@ fun TypingIndicator(
     spacing: Dp = 8.dp,
     containerPadding: Dp = 16.dp,
 ) {
-    val reducedMotion = LocalReducedMotion.current
+    val reducedMotion = rememberReducedMotion()
     val density = LocalDensity.current
     val barMaxHeightPx = with(density) { barMaxHeight.toPx() }
 

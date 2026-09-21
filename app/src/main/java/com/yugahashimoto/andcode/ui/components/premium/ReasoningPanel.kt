@@ -51,6 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.yugahashimoto.andcode.ui.theme.premium.LocalReducedMotion
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumColorValues
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens
+import com.yugahashimoto.andcode.ui.theme.premium.rememberReducedMotion
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.delay
@@ -72,7 +73,7 @@ fun ReasoningPanel(
     onToggleExpand: () -> Unit,
     expanded: Boolean = true,
 ) {
-    val reducedMotion = LocalReducedMotion.current
+    val reducedMotion = rememberReducedMotion()
 
     val infiniteTransition = rememberInfiniteTransition(label = "reasoningPanel")
 
