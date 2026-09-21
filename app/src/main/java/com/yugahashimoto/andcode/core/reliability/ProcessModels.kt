@@ -1,5 +1,8 @@
 package com.yugahashimoto.andcode.core.reliability
 
+import kotlin.math.min
+import kotlin.math.pow
+
 enum class ProcessState {
     CREATED,
     STARTING,
@@ -62,6 +65,10 @@ fun computeNextRestartDelay(
     baseDelayMillis: Long,
     maxDelayMillis: Long = 120_000L,
 ): Long {
-    val exponential = baseDelayMillis * Math.pow(2.0, restartCount.toDouble())
-    return min(exponential.toLong(), maxDelayMillis)
+    val exponential =
+        (baseDelayMillis.toDouble() * 2.0.pow(restartCount.toDouble()))
+            .coerceAtMost(Long.MAX_VALUE.toDouble())
+            .toLong()
+
+    return min(exponential, maxDelayMillis)
 }

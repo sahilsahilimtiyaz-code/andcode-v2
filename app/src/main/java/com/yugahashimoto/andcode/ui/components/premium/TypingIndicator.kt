@@ -1,6 +1,7 @@
 package com.yugahashimoto.andcode.ui.components.premium
 
 import androidx.compose.animation.core.Easing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -25,11 +26,13 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.yugahashimoto.andcode.ui.theme.premium.LocalReducedMotion
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumColorValues
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens
+import kotlin.math.max
 
 @Composable
 fun TypingIndicator(
@@ -41,6 +44,8 @@ fun TypingIndicator(
     containerPadding: Dp = 16.dp,
 ) {
     val reducedMotion = LocalReducedMotion.current
+    val density = LocalDensity.current
+    val barMaxHeightPx = with(density) { barMaxHeight.toPx() }
 
     val infiniteTransition = rememberInfiniteTransition(label = "typingIndicator")
 
@@ -161,7 +166,7 @@ fun TypingIndicator(
                                 .background(
                                     brush = Brush.linearGradient(
                                         colors = listOf(neonBlue, electricPurple),
-                                        start = Offset(0f, barMaxHeight.toPx()),
+                                        start = Offset(0f, barMaxHeightPx),
                                         end = Offset(0f, 0f),
                                     ),
                                     shape = RoundedCornerShape(PremiumTokens.RadiusSmall),

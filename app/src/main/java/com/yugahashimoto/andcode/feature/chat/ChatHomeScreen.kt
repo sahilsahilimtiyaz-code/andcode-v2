@@ -96,6 +96,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateSetOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -256,6 +258,7 @@ fun ChatHomeScreen(
     var legacyDownload by remember { mutableStateOf<ChatImageSource?>(null) }
     val timelineEntries = remember(state.messages) { groupConversationTimeline(state.messages) }
     val messageAnimationStates = remember { mutableStateMapOf<String, Boolean>() }
+    val revealedMessageIds = remember { mutableStateSetOf<String>() }
     val clipboardManager = LocalClipboardManager.current
     val coroutineScope = rememberCoroutineScope()
     var showSlashCommands by remember { mutableStateOf(false) }
@@ -484,45 +487,49 @@ fun ChatHomeScreen(
                                         is TimelineEntry.Error -> entry.id
                                         is TimelineEntry.Footer -> entry.id
                                     }
-                                    val isNewMessage = messageId?.let { it !in revealedMessageIds.value } == true
+                                    val animationKey = messageId ?: entry.id
+                                    val isNewMessage = messageId != null && messageId !in revealedMessageIds
+
                                     if (isNewMessage) {
-                                        messageId?.let { revealedMessageIds.value.add(it) }
+                                        revealedMessageIds += messageId!!
                                     }
+
                                     AnimatedVisibility(
-                                        visible = !isNewMessage || messageAnimationStates.getOrPut(messageId!!) { false },
-                                        enter = androidx.compose.animation.slideInVertically(
-                                            initialOffsetY = { 30.dp },
-                                            animationSpec = androidx.compose.animation.core.tween(
+                                        visible = !isNewMessage || messageAnimationStates.getOrPut(animationKey) { false },
+                                        enter = slideInVertically(
+                                            initialOffsetY = { 30 },
+                                            animationSpec = tween(
                                                 durationMillis = PremiumTokens.DurationMedium,
                                                 easing = PremiumTokens.EasingDecelerate,
                                             ),
-                                        ) + androidx.compose.animation.fadeIn(
-                                            animationSpec = androidx.compose.animation.core.tween(
+                                        ) + fadeIn(
+                                            animationSpec = tween(
                                                 durationMillis = PremiumTokens.DurationMedium,
                                                 easing = PremiumTokens.EasingDecelerate,
                                             ),
                                         ),
-                                        exit = androidx.compose.animation.slideOutVertically(
-                                            targetOffsetY = { -30.dp },
-                                            animationSpec = androidx.compose.animation.core.tween(
+                                        exit = slideOutVertically(
+                                            targetOffsetY = { -30 },
+                                            animationSpec = tween(
                                                 durationMillis = PremiumTokens.DurationFast,
                                                 easing = PremiumTokens.EasingAccelerate,
                                             ),
-                                        ) + androidx.compose.animation.fadeOut(
-                                            animationSpec = androidx.compose.animation.core.tween(
+                                        ) + fadeOut(
+                                            animationSpec = tween(
                                                 durationMillis = PremiumTokens.DurationFast,
                                                 easing = PremiumTokens.EasingAccelerate,
                                             ),
                                         ),
                                     ) {
                                         TimelineEntryRow(
-                                            entry,
+                                            entry = entry,
                                             onOpenActivity = { activityGroupId = it },
                                             onImageClick = { selectedImage = it },
                                         )
                                     }
+
                                     if (isNewMessage) {
-                                        messageAnimationStates[messageId!!] = true
+                                        messageAnimationStates[animationKey] = true
                                     }
                                 }
                             }
