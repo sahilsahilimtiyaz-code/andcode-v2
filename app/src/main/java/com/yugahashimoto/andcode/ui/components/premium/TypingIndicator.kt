@@ -29,8 +29,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.Stroke
+import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -87,6 +87,11 @@ fun TypingIndicator(
         contentAlignment = Alignment.Center,
     ) {
         // Glass-morphism pill container
+        val pillRadius = PremiumTokens.RadiusPill.toPx()
+        val smallRadius = PremiumTokens.RadiusSmall.toPx()
+        val pillCornerRadius = CornerRadius(pillRadius, pillRadius)
+        val smallCornerRadius = CornerRadius(smallRadius, smallRadius)
+
         Box(
             modifier = Modifier
                 .width((barWidth * barCount + spacing * (barCount - 1)) + containerPadding * 2)
@@ -99,28 +104,19 @@ fun TypingIndicator(
                     drawRoundRect(
                         color = glassColor,
                         size = size,
-                        cornerRadius = CornerRadius(
-                            x = PremiumTokens.RadiusPill.toPx(),
-                            y = PremiumTokens.RadiusPill.toPx(),
-                        ),
+                        cornerRadius = pillCornerRadius,
                     )
                     drawRoundRect(
                         color = borderColor,
                         size = size,
-                        cornerRadius = CornerRadius(
-                            x = PremiumTokens.RadiusPill.toPx(),
-                            y = PremiumTokens.RadiusPill.toPx(),
-                        ),
+                        cornerRadius = pillCornerRadius,
                         style = Stroke(width = 1.dp.toPx()),
                     )
                     // Subtle inner glow
                     drawRoundRect(
                         color = neonBlue.copy(alpha = 0.03f),
                         size = size,
-                        cornerRadius = CornerRadius(
-                            x = PremiumTokens.RadiusPill.toPx(),
-                            y = PremiumTokens.RadiusPill.toPx(),
-                        ),
+                        cornerRadius = pillCornerRadius,
                         style = Stroke(width = 2.dp.toPx()),
                     )
                 },
@@ -143,8 +139,8 @@ fun TypingIndicator(
                             .width(barWidth)
                             .height(barMaxHeight)
                             .graphicsLayer {
-                                scaleY = currentScale
-                                transformOrigin = androidx.compose.ui.graphics.TransformOrigin(
+                                this.scaleY = currentScale
+                                this.transformOrigin = TransformOrigin(
                                     0.5f, 1f
                                 )
                             }
@@ -159,10 +155,7 @@ fun TypingIndicator(
                                         (barWidth + 12.dp).toPx(),
                                         (barMaxHeight + 12.dp).toPx() * currentScale
                                     ),
-                                    cornerRadius = CornerRadius(
-                                        x = PremiumTokens.RadiusSmall.toPx(),
-                                        y = PremiumTokens.RadiusSmall.toPx(),
-                                    ),
+                                    cornerRadius = smallCornerRadius,
                                 )
                                 // Inner highlight
                                 val highlightColor = neonBlue.copy(alpha = 0.3f * currentScale)
@@ -173,10 +166,7 @@ fun TypingIndicator(
                                         (barWidth + 4.dp).toPx(),
                                         (barMaxHeight + 4.dp).toPx() * currentScale
                                     ),
-                                    cornerRadius = CornerRadius(
-                                        x = PremiumTokens.RadiusSmall.toPx(),
-                                        y = PremiumTokens.RadiusSmall.toPx(),
-                                    ),
+                                    cornerRadius = smallCornerRadius,
                                 )
                             }
                     ) {
