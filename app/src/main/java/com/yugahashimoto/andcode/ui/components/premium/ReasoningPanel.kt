@@ -48,6 +48,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.PathMeasure
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -288,9 +290,19 @@ private fun ReasoningStepItem(
                             }
 
                             // Stroke trim animation
-                            val pathMeasure = path.toPathMeasure()
+                            val pathMeasure = PathMeasure().apply {
+                                setPath(path, false)
+                            }
+
                             val length = pathMeasure.length
-                            val trimPath = pathMeasure.getSegment(0f, length * progress, true)
+                            val trimPath = androidx.compose.ui.graphics.Path()
+
+                            pathMeasure.getSegment(
+                                startDistance = 0f,
+                                stopDistance = length * progress,
+                                destination = trimPath,
+                                startWithMoveTo = true,
+                            )
 
                             drawPath(
                                 path = trimPath,

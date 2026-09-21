@@ -56,7 +56,7 @@ fun TypingIndicator(
     val infiniteTransition = rememberInfiniteTransition(label = "typingIndicator")
 
     val bars = (0 until barCount).map { index ->
-        val delayMs = index * 150L
+        val delayMs = index * 150
         val cycleDuration = 1200
 
         infiniteTransition.animateFloat(
@@ -68,7 +68,7 @@ fun TypingIndicator(
                     delayMillis = delayMs
                     // Spring-like curve: fast attack, overshoot, settle
                     0.3f at 0 with FastOutSlowInEasing
-                    1.0f at (cycleDuration * 0.3) with FastOutSlowInEasing
+                    1.0f at (cycleDuration * 0.3f).toInt() with FastOutSlowInEasing
                     0.3f at cycleDuration with FastOutSlowInEasing
                 },
                 repeatMode = RepeatMode.Restart,
