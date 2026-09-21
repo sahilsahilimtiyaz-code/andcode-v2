@@ -65,7 +65,12 @@ fun ModelRouterScreen(
             item {
                 GlassMorphismCard(modifier = Modifier.fillMaxWidth()) {
                     Column {
-                        Text("Provider Health", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            text = "Provider Health",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                        )
                         Spacer(modifier = Modifier.height(12.dp))
                         routerState.providers.forEach { provider ->
                             ProviderRow(
@@ -81,7 +86,12 @@ fun ModelRouterScreen(
             item {
                 GlassMorphismCard(modifier = Modifier.fillMaxWidth()) {
                     Column {
-                        Text("Fallback Strategy", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            text = "Fallback Strategy",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                        )
                         Spacer(modifier = Modifier.height(12.dp))
                         routerState.strategies.forEach { strategy ->
                             StrategyRow(

@@ -66,9 +66,17 @@ fun AdvancedGitScreen(
             item {
                 GlassMorphismCard(modifier = Modifier.fillMaxWidth()) {
                     Column {
-                        Text("Merge Conflicts", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            text = "Merge Conflicts",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("${conflictState.getResolvedCount()} / ${conflictState.getTotalCount()} resolved", color = Color.White.copy(alpha = 0.7f))
+                        Text(
+                            text = "${conflictState.getResolvedCount()} / ${conflictState.getTotalCount()} resolved",
+                            color = Color.White.copy(alpha = 0.7f),
+                        )
                     }
                 }
             }

@@ -85,9 +85,21 @@ private fun PluginCard(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier.weight(1f)) {
-                Text(plugin.name, color = Color.White, fontWeight = FontWeight.Bold)
-                Text(plugin.description, color = Color.White.copy(alpha = 0.7f), style = MaterialTheme.typography.bodySmall)
-                Text("v${plugin.version} • ${plugin.author}", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.labelSmall)
+                Text(
+                    text = plugin.name,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = plugin.description,
+                    color = Color.White.copy(alpha = 0.7f),
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Text(
+                    text = "v${plugin.version} • ${plugin.author}",
+                    color = Color.White.copy(alpha = 0.5f),
+                    style = MaterialTheme.typography.labelSmall,
+                )
             }
             Switch(
                 checked = plugin.isEnabled,

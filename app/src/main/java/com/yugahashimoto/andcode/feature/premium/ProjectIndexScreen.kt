@@ -81,9 +81,21 @@ fun ProjectIndexScreen(
                 items(indexState.searchResults) { symbol ->
                     GlassMorphismSurface(modifier = Modifier.fillMaxWidth()) {
                         Column {
-                            Text(symbol.name, color = Color.White, fontWeight = FontWeight.Bold)
-                            Text(symbol.type, color = Color(0xFF00D4FF), style = MaterialTheme.typography.bodySmall)
-                            Text("${symbol.file}:${symbol.line}", color = Color.White.copy(alpha = 0.5f), style = MaterialTheme.typography.labelSmall)
+                            Text(
+                                text = symbol.name,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
+                            )
+                            Text(
+                                text = symbol.type,
+                                color = Color(0xFF00D4FF),
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                            Text(
+                                text = "${symbol.file}:${symbol.line}",
+                                color = Color.White.copy(alpha = 0.5f),
+                                style = MaterialTheme.typography.labelSmall,
+                            )
                         }
                     }
                 }

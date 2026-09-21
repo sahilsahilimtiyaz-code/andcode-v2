@@ -61,9 +61,17 @@ fun BuildDoctorScreen(
             item {
                 GlassMorphismCard(modifier = Modifier.fillMaxWidth()) {
                     Column {
-                        Text("Build Output", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            text = "Build Output",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("${gradleState.errors.size} errors found", color = if (gradleState.errors.isNotEmpty()) Color(0xFFEF4444) else Color(0xFF22C55E))
+                        Text(
+                            text = "${gradleState.errors.size} errors found",
+                            color = if (gradleState.errors.isNotEmpty()) Color(0xFFEF4444) else Color(0xFF22C55E),
+                        )
                     }
                 }
             }
@@ -76,7 +84,12 @@ fun BuildDoctorScreen(
                 item {
                     GlassMorphismCard(modifier = Modifier.fillMaxWidth()) {
                         Column {
-                            Text("Full Output", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, color = Color.White)
+                            Text(
+                                text = "Full Output",
+                                style = MaterialTheme.typography.titleSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White,
+                            )
                             Spacer(modifier = Modifier.height(8.dp))
                             Text(
                                 gradleState.output.takeLast(20).joinToString("\n"),

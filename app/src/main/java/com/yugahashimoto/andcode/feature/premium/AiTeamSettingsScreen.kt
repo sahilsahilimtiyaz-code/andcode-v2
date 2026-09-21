@@ -76,9 +76,17 @@ fun AiTeamSettingsScreen(
             item {
                 GlassMorphismCard(modifier = Modifier.fillMaxWidth()) {
                     Column {
-                        Text("Autonomy Level", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            text = "Autonomy Level",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Level $autonomyLevel of 5", color = Color.White.copy(alpha = 0.7f))
+                        Text(
+                            text = "Level $autonomyLevel of 5",
+                            color = Color.White.copy(alpha = 0.7f),
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
                         androidx.compose.material3.Slider(
                             value = autonomyLevel.toFloat(),
@@ -97,9 +105,17 @@ fun AiTeamSettingsScreen(
             item {
                 GlassMorphismCard(modifier = Modifier.fillMaxWidth()) {
                     Column {
-                        Text("Budget Limit", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text(
+                            text = "Budget Limit",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("\$$budgetLimit per mission", color = Color.White.copy(alpha = 0.7f))
+                        Text(
+                            text = "\$$budgetLimit per mission",
+                            color = Color.White.copy(alpha = 0.7f),
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
                         androidx.compose.material3.Slider(
                             value = budgetLimit.toFloat(),
