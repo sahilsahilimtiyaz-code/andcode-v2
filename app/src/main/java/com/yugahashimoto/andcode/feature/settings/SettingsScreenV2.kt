@@ -26,6 +26,7 @@ import androidx.compose.material.icons.filled.Mic
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.OpenInBrowser
 import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Policy
 import androidx.compose.material.icons.filled.Router
 import androidx.compose.material.icons.filled.SmartToy
@@ -149,6 +150,12 @@ fun SettingsScreenV2(
 
         val settingsListContent: @Composable () -> Unit = {
             SettingsSection(title = stringResource(R.string.section_assistant_settings)) {
+                SettingsRow(
+                    icon = Icons.Default.Info,
+                    title = "AndCode v2.0 Premium - built by Sahil (Octavian)",
+                    onClick = {},
+                )
+                SettingsDivider()
                 SettingsRow(
                     icon = Icons.Default.Home,
                     title = stringResource(R.string.settings_home_assistant_row),
