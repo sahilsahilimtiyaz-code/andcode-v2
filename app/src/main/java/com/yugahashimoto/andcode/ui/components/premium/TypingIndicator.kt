@@ -86,8 +86,8 @@ fun TypingIndicator(
         contentAlignment = Alignment.Center,
     ) {
         // Glass-morphism pill container
-        val pillRadius = PremiumTokens.RADIUS_PILL.toPx()
-        val smallRadius = PremiumTokens.RADIUS_SMALL.toPx()
+        val pillRadius = with(density) { PremiumTokens.RADIUS_PILL.toPx() }
+        val smallRadius = with(density) { PremiumTokens.RADIUS_SMALL.toPx() }
         val pillCornerRadius = CornerRadius(pillRadius, pillRadius)
         val smallCornerRadius = CornerRadius(smallRadius, smallRadius)
 
@@ -137,8 +137,8 @@ fun TypingIndicator(
                     Box(
                         modifier = Modifier
                             .width(barWidth)
-                            .height(barMaxHeight)
-                            .contentAlignment = Alignment.BottomCenter,
+                            .height(barMaxHeight),
+                        contentAlignment = Alignment.BottomCenter,
                     ) {
                         Box(
                             modifier = Modifier
