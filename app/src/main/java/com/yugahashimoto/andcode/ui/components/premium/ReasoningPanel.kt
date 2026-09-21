@@ -57,7 +57,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.yugahashimoto.andcode.ui.theme.premium.LocalReducedMotion
+import com.yugahashimoto.andcode.ui.theme.premium.LOCAL_REDUCED_MOTION
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumColorValues
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens
 import com.yugahashimoto.andcode.ui.theme.premium.rememberReducedMotion
@@ -112,7 +112,7 @@ fun ReasoningPanel(
             .animateContentSize()
             .clip(RoundedCornerShape(PremiumTokens.RADIUS_LARGE))
             .drawBehind {
-                val glowColor = PremiumColorValues.NeonBlue.copy(alpha = 0.08f * glowAnim.value)
+                val glowColor = PremiumColorValues.NEON_BLUE.copy(alpha = 0.08f * glowAnim.value)
                 val largeRadius = PremiumTokens.RADIUS_LARGE.toPx()
                 val cornerRadius = CornerRadius(largeRadius, largeRadius)
                 drawRoundRect(
@@ -125,7 +125,7 @@ fun ReasoningPanel(
         color = Color.White.copy(alpha = 0.05f),
         border = androidx.compose.foundation.BorderStroke(
             width = 1.dp,
-            color = PremiumColorValues.NeonBlue.copy(alpha = 0.15f),
+            color = PremiumColorValues.NEON_BLUE.copy(alpha = 0.15f),
         ),
         shape = RoundedCornerShape(PremiumTokens.RADIUS_LARGE),
     ) {
@@ -147,7 +147,7 @@ fun ReasoningPanel(
                     Icon(
                         imageVector = Icons.Default.Psychology,
                         contentDescription = null,
-                        tint = PremiumColorValues.NeonBlue,
+                        tint = PremiumColorValues.NEON_BLUE,
                         modifier = Modifier.size(20.dp),
                     )
                     Column {
@@ -160,7 +160,7 @@ fun ReasoningPanel(
                             Text(
                                 text = "${(progress * 100).toInt()}%",
                                 style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
-                                color = PremiumColorValues.NeonBlue.copy(alpha = 0.8f),
+                                color = PremiumColorValues.NEON_BLUE.copy(alpha = 0.8f),
                             )
                         }
                     }
@@ -172,7 +172,7 @@ fun ReasoningPanel(
                     Icon(
                         imageVector = if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
                         contentDescription = if (expanded) "Collapse" else "Expand",
-                        tint = PremiumColorValues.NeonBlue,
+                        tint = PremiumColorValues.NEON_BLUE,
                         modifier = Modifier
                             .size(20.dp)
                             .graphicsLayer {
@@ -237,9 +237,9 @@ private fun ReasoningStepItem(
     )
 
     val statusColor = when (step.status) {
-        ReasoningStepStatus.COMPLETED -> PremiumColorValues.NeonGreen
-        ReasoningStepStatus.IN_PROGRESS -> PremiumColorValues.NeonBlue
-        ReasoningStepStatus.ERROR -> PremiumColorValues.NeonRed
+        ReasoningStepStatus.COMPLETED -> PremiumColorValues.NEON_GREEN
+        ReasoningStepStatus.IN_PROGRESS -> PremiumColorValues.NEON_BLUE
+        ReasoningStepStatus.ERROR -> PremiumColorValues.NEON_RED
         else -> androidx.compose.material3.MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
     }
 
@@ -368,7 +368,7 @@ private fun ReasoningStepItem(
                 text = step.title,
                 style = androidx.compose.material3.MaterialTheme.typography.bodyMedium,
                 fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
-                color = if (isActive) PremiumColorValues.NeonBlue else androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
+                color = if (isActive) PremiumColorValues.NEON_BLUE else androidx.compose.material3.MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -388,7 +388,7 @@ private fun ReasoningStepItem(
             Text(
                 text = "${(progressAnim.value * 100).toInt()}%",
                 style = androidx.compose.material3.MaterialTheme.typography.labelSmall,
-                color = PremiumColorValues.NeonBlue,
+                color = PremiumColorValues.NEON_BLUE,
                 fontWeight = FontWeight.Medium,
             )
         }
@@ -404,7 +404,7 @@ private fun ReasoningStepItem(
                 .background(
                     brush = Brush.horizontalGradient(
                         colors = listOf(
-                            PremiumColorValues.NeonBlue.copy(alpha = 0.1f),
+                            PremiumColorValues.NEON_BLUE.copy(alpha = 0.1f),
                             Color.Transparent,
                         ),
                     ),

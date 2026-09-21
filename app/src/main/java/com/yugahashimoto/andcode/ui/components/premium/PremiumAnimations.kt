@@ -48,7 +48,7 @@ import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens
 @Composable
 fun BreathingGlow(
     modifier: Modifier = Modifier,
-    color: Color = PremiumColorValues.NeonBlue,
+    color: Color = PremiumColorValues.NEON_BLUE,
     isActive: Boolean = true,
 ) {
     if (!isActive) return
@@ -183,7 +183,7 @@ fun PremiumButton(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = if (enabled) PremiumColorValues.NeonBlue.copy(alpha = 0.08f) else Color.Transparent,
+                    color = if (enabled) PremiumColorValues.NEON_BLUE.copy(alpha = 0.08f) else Color.Transparent,
                     shape = RoundedCornerShape(PremiumTokens.RADIUS_PILL),
                 ),
             verticalAlignment = Alignment.CenterVertically,

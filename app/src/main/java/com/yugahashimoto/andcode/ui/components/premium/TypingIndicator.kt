@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.yugahashimoto.andcode.ui.theme.premium.LocalReducedMotion
+import com.yugahashimoto.andcode.ui.theme.premium.LOCAL_REDUCED_MOTION
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumColorValues
 import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens
 import com.yugahashimoto.andcode.ui.theme.premium.rememberReducedMotion
