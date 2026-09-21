@@ -13,10 +13,10 @@ import androidx.compose.ui.platform.LocalContext
  * The default is false. The value is supplied by the theme because reading
  * LocalContext is only valid from a composable context.
  */
-// ktlint:disable PropertyNaming
+// ktlint:disable property-naming
 val LOCAL_REDUCED_MOTION: CompositionLocal<Boolean> =
     staticCompositionLocalOf { false }
-// ktlint:enable PropertyNaming
+// ktlint:enable property-naming
 
 @Composable
 fun rememberReducedMotion(): Boolean {
