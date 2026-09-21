@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -97,19 +98,28 @@ fun TypingIndicator(
                     drawRoundRect(
                         color = glassColor,
                         size = this.size.toSize(),
-                        cornerRadius = PremiumTokens.RadiusPill.toPx(),
+                        cornerRadius = CornerRadius(
+                            x = PremiumTokens.RadiusPill.toPx(),
+                            y = PremiumTokens.RadiusPill.toPx(),
+                        ),
                     )
                     drawRoundRect(
                         color = borderColor,
                         size = this.size.toSize(),
-                        cornerRadius = PremiumTokens.RadiusPill.toPx(),
+                        cornerRadius = CornerRadius(
+                            x = PremiumTokens.RadiusPill.toPx(),
+                            y = PremiumTokens.RadiusPill.toPx(),
+                        ),
                         style = androidx.compose.ui.graphics.Stroke(width = 1.dp.toPx()),
                     )
                     // Subtle inner glow
                     drawRoundRect(
                         color = neonBlue.copy(alpha = 0.03f),
                         size = this.size.toSize(),
-                        cornerRadius = PremiumTokens.RadiusPill.toPx(),
+                        cornerRadius = CornerRadius(
+                            x = PremiumTokens.RadiusPill.toPx(),
+                            y = PremiumTokens.RadiusPill.toPx(),
+                        ),
                         style = androidx.compose.ui.graphics.Stroke(width = 2.dp.toPx()),
                     )
                 },
@@ -148,7 +158,10 @@ fun TypingIndicator(
                                         (barWidth + 12.dp).toPx(),
                                         (barMaxHeight + 12.dp).toPx() * currentScale
                                     ),
-                                    cornerRadius = PremiumTokens.RadiusSmall.toPx(),
+                                    cornerRadius = CornerRadius(
+                                        x = PremiumTokens.RadiusSmall.toPx(),
+                                        y = PremiumTokens.RadiusSmall.toPx(),
+                                    ),
                                 )
                                 // Inner highlight
                                 val highlightColor = neonBlue.copy(alpha = 0.3f * currentScale)
@@ -159,7 +172,10 @@ fun TypingIndicator(
                                         (barWidth + 4.dp).toPx(),
                                         (barMaxHeight + 4.dp).toPx() * currentScale
                                     ),
-                                    cornerRadius = PremiumTokens.RadiusSmall.toPx(),
+                                    cornerRadius = CornerRadius(
+                                        x = PremiumTokens.RadiusSmall.toPx(),
+                                        y = PremiumTokens.RadiusSmall.toPx(),
+                                    ),
                                 )
                             }
                     ) {

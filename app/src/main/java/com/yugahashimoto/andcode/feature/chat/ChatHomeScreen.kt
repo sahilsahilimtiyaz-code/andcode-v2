@@ -496,39 +496,13 @@ fun ChatHomeScreen(
                                         }
                                     }
 
-                                    AnimatedVisibility(
-                                        visible = !isNewMessage || messageAnimationStates.getOrPut(animationKey) { false },
-                                        enter = slideInVertically(
-                                            initialOffsetY = { 30 },
-                                            animationSpec = tween(
-                                                durationMillis = PremiumTokens.DurationMedium,
-                                                easing = PremiumTokens.EasingDecelerate,
-                                            ),
-                                        ) + fadeIn(
-                                            animationSpec = tween(
-                                                durationMillis = PremiumTokens.DurationMedium,
-                                                easing = PremiumTokens.EasingDecelerate,
-                                            ),
-                                        ),
-                                        exit = slideOutVertically(
-                                            targetOffsetY = { -30 },
-                                            animationSpec = tween(
-                                                durationMillis = PremiumTokens.DurationFast,
-                                                easing = PremiumTokens.EasingAccelerate,
-                                            ),
-                                        ) + fadeOut(
-                                            animationSpec = tween(
-                                                durationMillis = PremiumTokens.DurationFast,
-                                                easing = PremiumTokens.EasingAccelerate,
-                                            ),
-                                        ),
-                                    ) {
-                                        TimelineEntryRow(
-                                            entry = entry,
-                                            onOpenActivity = { activityGroupId = it },
-                                            onImageClick = { selectedImage = it },
-                                        )
-                                    }
+                                    AnimatedTimelineEntry(
+                                        entry = entry,
+                                        visible = !isNewMessage ||
+                                            messageAnimationStates.getOrPut(animationKey) { false },
+                                        onOpenActivity = { activityGroupId = it },
+                                        onImageClick = { selectedImage = it },
+                                    )
 
                                     if (isNewMessage) {
                                         messageAnimationStates[animationKey] = true
@@ -2179,6 +2153,48 @@ private fun formatTokenCount(tokens: Long): String =
         tokens >= 1_000 -> "%.0fk".format(tokens / 1_000.0)
         else -> tokens.toString()
     }
+
+@Composable
+private fun AnimatedTimelineEntry(
+    entry: TimelineEntry,
+    visible: Boolean,
+    onOpenActivity: (String) -> Unit,
+    onImageClick: (ChatImageSource) -> Unit,
+) {
+    androidx.compose.animation.AnimatedVisibility(
+        visible = visible,
+        enter = slideInVertically(
+            initialOffsetY = { 30 },
+            animationSpec = tween(
+                durationMillis = PremiumTokens.DurationMedium,
+                easing = PremiumTokens.EasingDecelerate,
+            ),
+        ) + fadeIn(
+            animationSpec = tween(
+                durationMillis = PremiumTokens.DurationMedium,
+                easing = PremiumTokens.EasingDecelerate,
+            ),
+        ),
+        exit = slideOutVertically(
+            targetOffsetY = { -30 },
+            animationSpec = tween(
+                durationMillis = PremiumTokens.DurationFast,
+                easing = PremiumTokens.EasingAccelerate,
+            ),
+        ) + fadeOut(
+            animationSpec = tween(
+                durationMillis = PremiumTokens.DurationFast,
+                easing = PremiumTokens.EasingAccelerate,
+            ),
+        ),
+    ) {
+        TimelineEntryRow(
+            entry = entry,
+            onOpenActivity = onOpenActivity,
+            onImageClick = onImageClick,
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable

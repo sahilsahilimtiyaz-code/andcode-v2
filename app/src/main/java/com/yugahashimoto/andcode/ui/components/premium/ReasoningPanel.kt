@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -122,7 +123,10 @@ fun ReasoningPanel(
                 drawRoundRect(
                     color = glowColor,
                     size = this.size.toSize(),
-                    cornerRadius = PremiumTokens.RadiusLarge.toPx(),
+                    cornerRadius = CornerRadius(
+                        x = PremiumTokens.RadiusLarge.toPx(),
+                        y = PremiumTokens.RadiusLarge.toPx(),
+                    ),
                     style = androidx.compose.ui.graphics.Stroke(width = 2.dp.toPx()),
                 )
             },
