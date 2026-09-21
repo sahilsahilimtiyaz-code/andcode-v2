@@ -7,12 +7,13 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.RippleTheme
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +30,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import kotlin.math.max
 import kotlin.math.min
@@ -135,19 +135,6 @@ fun LayeredShadowCard(
 }
 
 /**
- * Custom ripple theme for premium buttons
- */
-object PremiumRippleTheme : RippleTheme {
-    @Composable
-    override fun defaultColor() = PremiumColorValues.NeonBlue.copy(alpha = 0.12f)
-
-    @Composable
-    override fun rippleAlpha() = androidx.compose.material.ripple.RippleAlpha(
-        0.1f, 0.15f, 0.1f, 0.15f
-    )
-}
-
-/**
  * Premium button with micro-interactions
  */
 @Composable
@@ -155,43 +142,25 @@ fun PremiumButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    colors: androidx.compose.material3.ButtonColors = androidx.compose.material3.ButtonDefaults.buttonColors(),
-    contentPadding: androidx.compose.foundation.layout.PaddingValues = androidx.compose.material3.ButtonDefaults.ContentPadding,
+    colors: androidx.compose.material3.ButtonColors = ButtonDefaults.buttonColors(),
+    contentPadding: androidx.compose.foundation.layout.PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable androidx.compose.foundation.layout.RowScope.() -> Unit,
 ) {
-    val pressScale = remember { mutableStateOf(1f) }
+    val interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
 
-    androidx.compose.material3.Button(
-        onClick = {
-            if (enabled) onClick()
-        },
+    Button(
+        onClick = onClick,
         modifier = modifier
             .graphicsLayer {
-                scaleX = pressScale.value
-                scaleY = pressScale.value
-            }
-            .pointerInput(enabled) {
-                androidx.compose.foundation.gestures.detectTapGestures(
-                    onPress = { pressScale.value = 0.98f },
-                    onRelease = { pressScale.value = 1f },
-                    onTapCancel = { pressScale.value = 1f },
-                    onTap = {},
-                )
+                scaleX = if (isPressed) 0.98f else 1f
+                scaleY = if (isPressed) 0.98f else 1f
             },
         enabled = enabled,
         colors = colors,
         contentPadding = contentPadding,
+        interactionSource = interactionSource,
     ) {
-        androidx.compose.foundation.layout.Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    color = if (enabled) PremiumColorValues.NeonBlue.copy(alpha = 0.08f) else Color.Transparent,
-                    shape = RoundedCornerShape(PremiumTokens.RadiusPill),
-                ),
-            contentAlignment = Alignment.Center,
-        ) {
-            content()
-        }
+        content()
     }
 }

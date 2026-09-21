@@ -26,10 +26,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -110,7 +110,7 @@ fun TypingIndicator(
                             x = PremiumTokens.RadiusPill.toPx(),
                             y = PremiumTokens.RadiusPill.toPx(),
                         ),
-                        style = androidx.compose.ui.graphics.Stroke(width = 1.dp.toPx()),
+                        style = Stroke(width = 1.dp.toPx()),
                     )
                     // Subtle inner glow
                     drawRoundRect(
@@ -120,7 +120,7 @@ fun TypingIndicator(
                             x = PremiumTokens.RadiusPill.toPx(),
                             y = PremiumTokens.RadiusPill.toPx(),
                         ),
-                        style = androidx.compose.ui.graphics.Stroke(width = 2.dp.toPx()),
+                        style = Stroke(width = 2.dp.toPx()),
                     )
                 },
             contentAlignment = Alignment.Center,
