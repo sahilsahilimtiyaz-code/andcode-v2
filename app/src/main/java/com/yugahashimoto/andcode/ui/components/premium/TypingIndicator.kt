@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Stroke
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -139,9 +140,10 @@ fun TypingIndicator(
                             .width(barWidth)
                             .height(barMaxHeight)
                             .graphicsLayer {
-                                this.scaleY = currentScale
-                                this.transformOrigin = TransformOrigin(
-                                    0.5f, 1f
+                                scaleY = currentScale
+                                transformOrigin = TransformOrigin(
+                                    pivotFractionX = 0.5f,
+                                    pivotFractionY = 1f,
                                 )
                             }
                             .clip(RoundedCornerShape(PremiumTokens.RadiusSmall))
