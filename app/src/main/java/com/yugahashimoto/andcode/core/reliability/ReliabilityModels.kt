@@ -50,11 +50,14 @@ data class CircuitBreakerState(
             CircuitState.OPEN -> this
         }
 
-    fun recordFailure(nowMillis: Long = System.currentTimeMillis()): CircuitBreakerState =
+    fun recordFailure(
+        nowMillis: Long = System.currentTimeMillis(),
+        failureThreshold: Int = 5,
+    ): CircuitBreakerState =
         when (state) {
             CircuitState.CLOSED -> {
                 val newCount = failureCount + 1
-                if (newCount >= 5) {
+                if (newCount >= failureThreshold) {
                     copy(state = CircuitState.OPEN, failureCount = newCount, lastFailureTimeMillis = nowMillis)
                 } else {
                     copy(failureCount = newCount)
@@ -68,8 +71,11 @@ data class CircuitBreakerState(
             CircuitState.OPEN -> copy(lastFailureTimeMillis = nowMillis)
         }
 
-    fun checkCooldown(nowMillis: Long = System.currentTimeMillis()): CircuitBreakerState =
-        if (state == CircuitState.OPEN && nowMillis - lastFailureTimeMillis >= 60_000L) {
+    fun checkCooldown(
+        nowMillis: Long = System.currentTimeMillis(),
+        cooldownMillis: Long = 60_000L,
+    ): CircuitBreakerState =
+        if (state == CircuitState.OPEN && nowMillis - lastFailureTimeMillis >= cooldownMillis) {
             copy(state = CircuitState.HALF_OPEN, successCount = 0)
         } else {
             this

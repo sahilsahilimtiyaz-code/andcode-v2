@@ -157,6 +157,7 @@ internal fun mergeReloadedMessages(
         }.toMutableList()
     val reloadedIds = reloaded.map { it.id }.toSet()
     // Preserve streaming assistant messages (via retainIds)
+    // User messages are never retained — only assistant messages streamed locally survive a reload.
     if (retainIds.isNotEmpty()) {
         existing
             .asSequence()
@@ -172,21 +173,6 @@ internal fun mergeReloadedMessages(
                 }
             }
     }
-    // Preserve local user messages that haven't reached the server yet.
-    // These are user messages in existing that don't match any reloaded message.
-    existing
-        .asSequence()
-        .filter { message ->
-            message.isUser && message.id !in reloadedIds && !usedExisting.contains(existing.indexOf(message))
-        }
-        .forEach { message ->
-            val index = merged.indexOfFirst { it.timestamp > message.timestamp }
-            if (index >= 0) {
-                merged.add(index, message)
-            } else {
-                merged.add(message)
-            }
-        }
     return merged
 }
 
