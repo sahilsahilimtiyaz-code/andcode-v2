@@ -491,7 +491,9 @@ fun ChatHomeScreen(
                                     val isNewMessage = messageId != null && revealedMessageIds[messageId] != true
 
                                     if (isNewMessage) {
-                                        revealedMessageIds[messageId!!] = true
+                                        LaunchedEffect(messageId) {
+                                            revealedMessageIds[messageId] = true
+                                        }
                                     }
 
                                     AnimatedVisibility(
@@ -578,36 +580,36 @@ fun ChatHomeScreen(
                             // cleared this flag, so the warning would sit directly above a chip
                             // cheerfully reporting that the same turn is thinking.
                             if (state.isThinking && state.stall == null) {
-                                var reasoningExpanded by remember { mutableStateOf(true) }
-                                val reasoningSteps = remember {
-                                    mutableStateListOf<ReasoningStep>(
-                                        ReasoningStep(
-                                            id = "analyze",
-                                            title = "Analyzing your request...",
-                                            description = "Understanding the problem and context",
-                                            status = ReasoningStepStatus.COMPLETED,
-                                        ),
-                                        ReasoningStep(
-                                            id = "plan",
-                                            title = "Planning approach...",
-                                            description = "Breaking down into actionable steps",
-                                            status = ReasoningStepStatus.COMPLETED,
-                                        ),
-                                        ReasoningStep(
-                                            id = "write",
-                                            title = "Writing code...",
-                                            description = "Implementing the solution",
-                                            status = ReasoningStepStatus.IN_PROGRESS,
-                                        ),
-                                        ReasoningStep(
-                                            id = "review",
-                                            title = "Reviewing for errors...",
-                                            description = "Checking correctness and best practices",
-                                            status = ReasoningStepStatus.PENDING,
-                                        ),
-                                    )
-                                }
-                                item {
+                                item(key = "reasoning") {
+                                    var reasoningExpanded by remember { mutableStateOf(true) }
+                                    val reasoningSteps = remember {
+                                        listOf(
+                                            ReasoningStep(
+                                                id = "analyze",
+                                                title = "Analyzing your request...",
+                                                description = "Understanding the problem and context",
+                                                status = ReasoningStepStatus.COMPLETED,
+                                            ),
+                                            ReasoningStep(
+                                                id = "plan",
+                                                title = "Planning approach...",
+                                                description = "Breaking down into actionable steps",
+                                                status = ReasoningStepStatus.COMPLETED,
+                                            ),
+                                            ReasoningStep(
+                                                id = "write",
+                                                title = "Writing code...",
+                                                description = "Implementing the solution",
+                                                status = ReasoningStepStatus.IN_PROGRESS,
+                                            ),
+                                            ReasoningStep(
+                                                id = "review",
+                                                title = "Reviewing for errors...",
+                                                description = "Checking correctness and best practices",
+                                                status = ReasoningStepStatus.PENDING,
+                                            ),
+                                        )
+                                    }
                                     ReasoningPanel(
                                         steps = reasoningSteps,
                                         progress = 0.6f,
