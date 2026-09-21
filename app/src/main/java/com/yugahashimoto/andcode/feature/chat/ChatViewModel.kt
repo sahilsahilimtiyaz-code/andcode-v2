@@ -155,16 +155,15 @@ internal fun mergeReloadedMessages(
                 }
             message.copy(attachments = attachments, imagePreviews = previews)
         }.toMutableList()
+    val reloadedIds = reloaded.map { it.id }.toSet()
+    // Preserve streaming assistant messages (via retainIds)
     if (retainIds.isNotEmpty()) {
-        val reloadedIds = reloaded.map { it.id }.toSet()
         existing
             .asSequence()
             .filter { message ->
                 !message.isUser && message.parts.isNotEmpty() && message.id in retainIds && message.id !in reloadedIds
             }
             .forEach { message ->
-                // The bubble belongs where it streamed, ahead of everything that came after it,
-                // not pinned to the bottom of a timeline that has moved on.
                 val index = merged.indexOfFirst { it.timestamp > message.timestamp }
                 if (index >= 0) {
                     merged.add(index, message)
@@ -173,6 +172,21 @@ internal fun mergeReloadedMessages(
                 }
             }
     }
+    // Preserve local user messages that haven't reached the server yet.
+    // These are user messages in existing that don't match any reloaded message.
+    existing
+        .asSequence()
+        .filter { message ->
+            message.isUser && message.id !in reloadedIds && !usedExisting.contains(existing.indexOf(message))
+        }
+        .forEach { message ->
+            val index = merged.indexOfFirst { it.timestamp > message.timestamp }
+            if (index >= 0) {
+                merged.add(index, message)
+            } else {
+                merged.add(message)
+            }
+        }
     return merged
 }
 

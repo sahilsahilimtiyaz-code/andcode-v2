@@ -9,7 +9,11 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -140,8 +144,14 @@ import com.yugahashimoto.andcode.runtime.local.ClaudePermissionMode
 import com.yugahashimoto.andcode.runtime.local.SystemPromptPreset
 import com.yugahashimoto.andcode.ui.components.StatusChip
 import com.yugahashimoto.andcode.ui.components.VolumeMeter
+import com.yugahashimoto.andcode.ui.components.premium.BreathingGlow
+import com.yugahashimoto.andcode.ui.components.premium.ReasoningPanel
+import com.yugahashimoto.andcode.ui.components.premium.ReasoningStep
+import com.yugahashimoto.andcode.ui.components.premium.ReasoningStepStatus
+import com.yugahashimoto.andcode.ui.components.premium.TypingIndicator
 import com.yugahashimoto.andcode.ui.components.systemPromptPresetLabel
 import com.yugahashimoto.andcode.ui.theme.AndCodeTheme
+import com.yugahashimoto.andcode.ui.theme.premium.PremiumTokens
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -245,6 +255,7 @@ fun ChatHomeScreen(
     var selectedImage by remember { mutableStateOf<ChatImageSource?>(null) }
     var legacyDownload by remember { mutableStateOf<ChatImageSource?>(null) }
     val timelineEntries = remember(state.messages) { groupConversationTimeline(state.messages) }
+    val messageAnimationStates = remember { mutableStateMapOf<String, Boolean>() }
     val clipboardManager = LocalClipboardManager.current
     val coroutineScope = rememberCoroutineScope()
     var showSlashCommands by remember { mutableStateOf(false) }
@@ -464,11 +475,55 @@ fun ChatHomeScreen(
                                             )
                                         },
                                 ) {
-                                    TimelineEntryRow(
-                                        entry,
-                                        onOpenActivity = { activityGroupId = it },
-                                        onImageClick = { selectedImage = it },
-                                    )
+                                    val messageId = when (entry) {
+                                        is TimelineEntry.UserMessage -> entry.message.id
+                                        is TimelineEntry.Body -> entry.messageId
+                                        is TimelineEntry.Activity -> entry.id
+                                        is TimelineEntry.Todo -> entry.id
+                                        is TimelineEntry.Image -> entry.id
+                                        is TimelineEntry.Error -> entry.id
+                                        is TimelineEntry.Footer -> entry.id
+                                    }
+                                    val isNewMessage = messageId?.let { it !in revealedMessageIds.value } == true
+                                    if (isNewMessage) {
+                                        messageId?.let { revealedMessageIds.value.add(it) }
+                                    }
+                                    AnimatedVisibility(
+                                        visible = !isNewMessage || messageAnimationStates.getOrPut(messageId!!) { false },
+                                        enter = androidx.compose.animation.slideInVertically(
+                                            initialOffsetY = { 30.dp },
+                                            animationSpec = androidx.compose.animation.core.tween(
+                                                durationMillis = PremiumTokens.DurationMedium,
+                                                easing = PremiumTokens.EasingDecelerate,
+                                            ),
+                                        ) + androidx.compose.animation.fadeIn(
+                                            animationSpec = androidx.compose.animation.core.tween(
+                                                durationMillis = PremiumTokens.DurationMedium,
+                                                easing = PremiumTokens.EasingDecelerate,
+                                            ),
+                                        ),
+                                        exit = androidx.compose.animation.slideOutVertically(
+                                            targetOffsetY = { -30.dp },
+                                            animationSpec = androidx.compose.animation.core.tween(
+                                                durationMillis = PremiumTokens.DurationFast,
+                                                easing = PremiumTokens.EasingAccelerate,
+                                            ),
+                                        ) + androidx.compose.animation.fadeOut(
+                                            animationSpec = androidx.compose.animation.core.tween(
+                                                durationMillis = PremiumTokens.DurationFast,
+                                                easing = PremiumTokens.EasingAccelerate,
+                                            ),
+                                        ),
+                                    ) {
+                                        TimelineEntryRow(
+                                            entry,
+                                            onOpenActivity = { activityGroupId = it },
+                                            onImageClick = { selectedImage = it },
+                                        )
+                                    }
+                                    if (isNewMessage) {
+                                        messageAnimationStates[messageId!!] = true
+                                    }
                                 }
                             }
                             // A run that has gone quiet says so here, in place of the "Processing"
@@ -482,12 +537,22 @@ fun ChatHomeScreen(
                                     )
                                 }
                             } else if (state.isRunning && timelineEntries.isNotEmpty()) {
-                                item(key = "processing") {
-                                    Text(
-                                        text = stringResource(R.string.processing),
-                                        style = MaterialTheme.typography.labelSmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    )
+                                // Check if there's a streaming assistant message to show typing indicator
+                                val streamingMessage = state.messages
+                                    .filter { !it.isUser }
+                                    .lastOrNull { it.isStreaming }
+                                if (streamingMessage != null) {
+                                    item(key = "typing-indicator") {
+                                        TypingIndicator()
+                                    }
+                                } else {
+                                    item(key = "processing") {
+                                        Text(
+                                            text = stringResource(R.string.processing),
+                                            style = MaterialTheme.typography.labelSmall,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        )
+                                    }
                                 }
                             }
                             items(state.permissions, key = { "permission-${it.id}" }) { permission ->
@@ -506,7 +571,43 @@ fun ChatHomeScreen(
                             // cleared this flag, so the warning would sit directly above a chip
                             // cheerfully reporting that the same turn is thinking.
                             if (state.isThinking && state.stall == null) {
-                                item { StatusChip(text = stringResource(R.string.thinking), active = true) }
+                                var reasoningExpanded by remember { mutableStateOf(true) }
+                                val reasoningSteps = remember {
+                                    mutableStateListOf<ReasoningStep>(
+                                        ReasoningStep(
+                                            id = "analyze",
+                                            title = "Analyzing your request...",
+                                            description = "Understanding the problem and context",
+                                            status = ReasoningStepStatus.COMPLETED,
+                                        ),
+                                        ReasoningStep(
+                                            id = "plan",
+                                            title = "Planning approach...",
+                                            description = "Breaking down into actionable steps",
+                                            status = ReasoningStepStatus.COMPLETED,
+                                        ),
+                                        ReasoningStep(
+                                            id = "write",
+                                            title = "Writing code...",
+                                            description = "Implementing the solution",
+                                            status = ReasoningStepStatus.IN_PROGRESS,
+                                        ),
+                                        ReasoningStep(
+                                            id = "review",
+                                            title = "Reviewing for errors...",
+                                            description = "Checking correctness and best practices",
+                                            status = ReasoningStepStatus.PENDING,
+                                        ),
+                                    )
+                                }
+                                item {
+                                    ReasoningPanel(
+                                        steps = reasoningSteps,
+                                        progress = 0.6f,
+                                        expanded = reasoningExpanded,
+                                        onToggleExpand = { reasoningExpanded = !reasoningExpanded },
+                                    )
+                                }
                             }
                             state.error?.let { error ->
                                 item {
