@@ -69,12 +69,12 @@ fun AdvancedGitScreen(
                         Text(
                             text = "Merge Conflicts",
                             style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
+                            fontWeight = FontWeight.SemiBold,
                             color = Color.White,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text = "${conflictState.getResolvedCount()} / ${conflictState.getTotalCount()} resolved",
+                            text = "${conflictState.conflicts.count { it.resolution != null }} / ${conflictState.conflicts.size} resolved",
                             color = Color.White.copy(alpha = 0.7f),
                         )
                     }

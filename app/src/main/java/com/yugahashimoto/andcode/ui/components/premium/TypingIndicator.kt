@@ -29,7 +29,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TransformOrigin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
@@ -134,55 +133,57 @@ fun TypingIndicator(
                     val scale by barAnim
                     val currentScale = if (reducedMotion) 1f else max(0.3f, scale)
 
+                    // Bottom-aligned bar that scales from bottom to preserve typing animation appearance
                     Box(
                         modifier = Modifier
                             .width(barWidth)
                             .height(barMaxHeight)
-                            .graphicsLayer {
-                                this.scaleY = currentScale
-                                this.transformOrigin = TransformOrigin(
-                                    0.5f, 1f
-                                )
-                            }
-                            .clip(RoundedCornerShape(PremiumTokens.RADIUS_SMALL))
-                            .drawBehind {
-                                // Outer glow shadow
-                                val glowColor = electricPurple.copy(alpha = 0.5f * currentScale)
-                                drawRoundRect(
-                                    color = glowColor,
-                                    topLeft = Offset(-6.dp.toPx(), -6.dp.toPx()),
-                                    size = Size(
-                                        (barWidth + 12.dp).toPx(),
-                                        (barMaxHeight + 12.dp).toPx() * currentScale
-                                    ),
-                                    cornerRadius = smallCornerRadius,
-                                )
-                                // Inner highlight
-                                val highlightColor = neonBlue.copy(alpha = 0.3f * currentScale)
-                                drawRoundRect(
-                                    color = highlightColor,
-                                    topLeft = Offset(-2.dp.toPx(), -2.dp.toPx()),
-                                    size = Size(
-                                        (barWidth + 4.dp).toPx(),
-                                        (barMaxHeight + 4.dp).toPx() * currentScale
-                                    ),
-                                    cornerRadius = smallCornerRadius,
-                                )
-                            }
+                            .contentAlignment = Alignment.BottomCenter,
                     ) {
-                        // Gradient fill
                         Box(
                             modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    brush = Brush.linearGradient(
-                                        colors = listOf(neonBlue, electricPurple),
-                                        start = Offset(0f, barMaxHeightPx),
-                                        end = Offset(0f, 0f),
-                                    ),
-                                    shape = RoundedCornerShape(PremiumTokens.RADIUS_SMALL),
-                                )
-                        )
+                                .width(barWidth)
+                                .height(barMaxHeight * currentScale)
+                                .clip(RoundedCornerShape(PremiumTokens.RADIUS_SMALL))
+                                .drawBehind {
+                                    // Outer glow shadow
+                                    val glowColor = electricPurple.copy(alpha = 0.5f * currentScale)
+                                    drawRoundRect(
+                                        color = glowColor,
+                                        topLeft = Offset(-6.dp.toPx(), -6.dp.toPx()),
+                                        size = Size(
+                                            (barWidth + 12.dp).toPx(),
+                                            (barMaxHeight + 12.dp).toPx() * currentScale
+                                        ),
+                                        cornerRadius = smallCornerRadius,
+                                    )
+                                    // Inner highlight
+                                    val highlightColor = neonBlue.copy(alpha = 0.3f * currentScale)
+                                    drawRoundRect(
+                                        color = highlightColor,
+                                        topLeft = Offset(-2.dp.toPx(), -2.dp.toPx()),
+                                        size = Size(
+                                            (barWidth + 4.dp).toPx(),
+                                            (barMaxHeight + 4.dp).toPx() * currentScale
+                                        ),
+                                        cornerRadius = smallCornerRadius,
+                                    )
+                                }
+                        ) {
+                            // Gradient fill
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(
+                                        brush = Brush.linearGradient(
+                                            colors = listOf(neonBlue, electricPurple),
+                                            start = Offset(0f, barMaxHeightPx),
+                                            end = Offset(0f, 0f),
+                                        ),
+                                        shape = RoundedCornerShape(PremiumTokens.RADIUS_SMALL),
+                                    )
+                            )
+                        }
                     }
                 }
             }

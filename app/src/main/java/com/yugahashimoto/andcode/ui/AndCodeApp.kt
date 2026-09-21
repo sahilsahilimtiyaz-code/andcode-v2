@@ -682,12 +682,18 @@ fun AndCodeApp(
     // Every runtime's chats, not just the selected one's: switching agent used to look like the
     // history had been wiped. Each row carries the runtime that owns it so opening one can switch.
     val allSessions by app.catalogRepository.allSessions.collectAsState()
-    val recentSessions =
-        remember(allSessions, activityState.activeSessionIds, activityState.completedSessionIds) {
+    val recentSessions: List<DrawerRecentSession> =
+        remember<List<DrawerRecentSession>>(
+            allSessions,
+            activityState.activeSessionIds,
+            activityState.completedSessionIds,
+        ) {
             allSessions
-                .filter { it.session.parentId == null }
-                .take(25).map { ref ->
-                    val session = ref.session
+                .filter { sessionRef -> sessionRef.session.parentId == null }
+                .take(25)
+                .map<DrawerRecentSession> { sessionRef ->
+                    val session = sessionRef.session
+
                     DrawerRecentSession(
                         id = session.id,
                         title = session.title.ifBlank { session.slug ?: session.id },
@@ -701,8 +707,8 @@ fun AndCodeApp(
                                 session.id in activityState.completedSessionIds -> SessionStatus.COMPLETED_UNREAD
                                 else -> SessionStatus.IDLE
                             },
-                        runtimeId = ref.runtimeId,
-                        agent = ref.agent,
+                        runtimeId = sessionRef.runtimeId,
+                        agent = sessionRef.agent,
                     )
                 }
         }
