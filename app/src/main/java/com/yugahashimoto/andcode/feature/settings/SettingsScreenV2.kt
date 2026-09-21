@@ -358,7 +358,7 @@ fun SettingsScreenV2(
                 // Premium feature rows
                 SettingsDivider()
                 SettingsRow(
-                    icon = Icons.Default.Favorite,
+                    icon = Icons.Default.Star,
                     title = "Missions",
                     onClick = onOpenMissions,
                 )
@@ -370,7 +370,7 @@ fun SettingsScreenV2(
                 )
                 SettingsDivider()
                 SettingsRow(
-                    icon = Icons.Default.Speed,
+                    icon = Icons.Default.Build,
                     title = "Performance Monitor",
                     onClick = onOpenPerformanceMonitor,
                 )

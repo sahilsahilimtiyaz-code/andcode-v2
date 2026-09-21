@@ -78,7 +78,7 @@ fun BreathingGlow(
     Box(
         modifier = modifier
             .drawBehind {
-                val maxRadius = PremiumTokens.GlowRadius.toPx() * glowRadius
+                val maxRadius = PremiumTokens.GLOW_RADIUS.toPx() * glowRadius
                 val glowColor = color.copy(alpha = 0.15f * glowAlpha)
                 drawCircle(
                     color = glowColor,
@@ -99,20 +99,20 @@ fun LayeredShadowCard(
     content: @Composable () -> Unit,
 ) {
     val elevationColors = listOf(
-        PremiumTokens.DurationFast to Color.Black.copy(alpha = 0.05f),
-        PremiumTokens.DurationMedium to Color.Black.copy(alpha = 0.08f),
-        PremiumTokens.DurationSlow to Color.Black.copy(alpha = 0.12f),
-        PremiumTokens.DurationXSlow to Color.Black.copy(alpha = 0.15f),
+        PremiumTokens.DURATION_FAST to Color.Black.copy(alpha = 0.05f),
+        PremiumTokens.DURATION_MEDIUM to Color.Black.copy(alpha = 0.08f),
+        PremiumTokens.DURATION_SLOW to Color.Black.copy(alpha = 0.12f),
+        PremiumTokens.DURATION_XSLOW to Color.Black.copy(alpha = 0.15f),
     )
 
     val shadowColor = elevationColors[min(elevationLevel - 1, elevationColors.lastIndex)].second
 
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(PremiumTokens.RadiusLarge))
+            .clip(RoundedCornerShape(PremiumTokens.RADIUS_LARGE))
             .drawBehind {
                 // Layered shadows for depth
-                val largeRadius = PremiumTokens.RadiusLarge.toPx()
+                val largeRadius = PremiumTokens.RADIUS_LARGE.toPx()
                 val cornerRadius = CornerRadius(largeRadius, largeRadius)
                 repeat(elevationLevel) { i ->
                     val offset = (i + 1) * 4
@@ -130,7 +130,7 @@ fun LayeredShadowCard(
         androidx.compose.material3.Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .clip(RoundedCornerShape(PremiumTokens.RadiusLarge)),
+                .clip(RoundedCornerShape(PremiumTokens.RADIUS_LARGE)),
             color = androidx.compose.material3.MaterialTheme.colorScheme.surface,
             tonalElevation = 0.dp,
         ) {
@@ -184,7 +184,7 @@ fun PremiumButton(
                 .fillMaxSize()
                 .background(
                     color = if (enabled) PremiumColorValues.NeonBlue.copy(alpha = 0.08f) else Color.Transparent,
-                    shape = RoundedCornerShape(PremiumTokens.RadiusPill),
+                    shape = RoundedCornerShape(PremiumTokens.RADIUS_PILL),
                 ),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,

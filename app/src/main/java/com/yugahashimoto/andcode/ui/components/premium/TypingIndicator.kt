@@ -29,8 +29,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Stroke
 import androidx.compose.ui.graphics.TransformOrigin
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -87,8 +87,8 @@ fun TypingIndicator(
         contentAlignment = Alignment.Center,
     ) {
         // Glass-morphism pill container
-        val pillRadius = PremiumTokens.RadiusPill.toPx()
-        val smallRadius = PremiumTokens.RadiusSmall.toPx()
+        val pillRadius = PremiumTokens.RADIUS_PILL.toPx()
+        val smallRadius = PremiumTokens.RADIUS_SMALL.toPx()
         val pillCornerRadius = CornerRadius(pillRadius, pillRadius)
         val smallCornerRadius = CornerRadius(smallRadius, smallRadius)
 
@@ -96,7 +96,7 @@ fun TypingIndicator(
             modifier = Modifier
                 .width((barWidth * barCount + spacing * (barCount - 1)) + containerPadding * 2)
                 .height(barMaxHeight + 16.dp)
-                .clip(RoundedCornerShape(PremiumTokens.RadiusPill))
+                .clip(RoundedCornerShape(PremiumTokens.RADIUS_PILL))
                 .drawBehind {
                     // Glass background with blur effect approximation
                     val glassColor = Color.White.copy(alpha = 0.08f)
@@ -144,7 +144,7 @@ fun TypingIndicator(
                                     0.5f, 1f
                                 )
                             }
-                            .clip(RoundedCornerShape(PremiumTokens.RadiusSmall))
+                            .clip(RoundedCornerShape(PremiumTokens.RADIUS_SMALL))
                             .drawBehind {
                                 // Outer glow shadow
                                 val glowColor = electricPurple.copy(alpha = 0.5f * currentScale)
@@ -180,7 +180,7 @@ fun TypingIndicator(
                                         start = Offset(0f, barMaxHeightPx),
                                         end = Offset(0f, 0f),
                                     ),
-                                    shape = RoundedCornerShape(PremiumTokens.RadiusSmall),
+                                    shape = RoundedCornerShape(PremiumTokens.RADIUS_SMALL),
                                 )
                         )
                     }

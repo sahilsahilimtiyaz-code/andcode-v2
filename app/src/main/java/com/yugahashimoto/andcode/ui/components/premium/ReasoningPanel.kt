@@ -110,10 +110,10 @@ fun ReasoningPanel(
         modifier = modifier
             .fillMaxWidth()
             .animateContentSize()
-            .clip(RoundedCornerShape(PremiumTokens.RadiusLarge))
+            .clip(RoundedCornerShape(PremiumTokens.RADIUS_LARGE))
             .drawBehind {
                 val glowColor = PremiumColorValues.NeonBlue.copy(alpha = 0.08f * glowAnim.value)
-                val largeRadius = PremiumTokens.RadiusLarge.toPx()
+                val largeRadius = PremiumTokens.RADIUS_LARGE.toPx()
                 val cornerRadius = CornerRadius(largeRadius, largeRadius)
                 drawRoundRect(
                     color = glowColor,
@@ -127,7 +127,7 @@ fun ReasoningPanel(
             width = 1.dp,
             color = PremiumColorValues.NeonBlue.copy(alpha = 0.15f),
         ),
-        shape = RoundedCornerShape(PremiumTokens.RadiusLarge),
+        shape = RoundedCornerShape(PremiumTokens.RADIUS_LARGE),
     ) {
         Column(
             modifier = Modifier

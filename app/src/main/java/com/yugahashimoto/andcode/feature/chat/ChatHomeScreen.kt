@@ -2166,25 +2166,25 @@ private fun AnimatedTimelineEntry(
         enter = slideInVertically(
             initialOffsetY = { 30 },
             animationSpec = tween(
-                durationMillis = PremiumTokens.DurationMedium,
-                easing = PremiumTokens.EasingDecelerate,
+                durationMillis = PremiumTokens.DURATION_MEDIUM,
+                easing = PremiumTokens.EASING_DECELERATE,
             ),
         ) + fadeIn(
             animationSpec = tween(
-                durationMillis = PremiumTokens.DurationMedium,
-                easing = PremiumTokens.EasingDecelerate,
+                durationMillis = PremiumTokens.DURATION_MEDIUM,
+                easing = PremiumTokens.EASING_DECELERATE,
             ),
         ),
         exit = slideOutVertically(
             targetOffsetY = { -30 },
             animationSpec = tween(
-                durationMillis = PremiumTokens.DurationFast,
-                easing = PremiumTokens.EasingAccelerate,
+                durationMillis = PremiumTokens.DURATION_FAST,
+                easing = PremiumTokens.EASING_ACCELERATE,
             ),
         ) + fadeOut(
             animationSpec = tween(
-                durationMillis = PremiumTokens.DurationFast,
-                easing = PremiumTokens.EasingAccelerate,
+                durationMillis = PremiumTokens.DURATION_FAST,
+                easing = PremiumTokens.EASING_ACCELERATE,
             ),
         ),
     ) {

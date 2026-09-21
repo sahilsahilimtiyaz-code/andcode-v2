@@ -89,15 +89,16 @@ fun CreatorCreditsScreen(
             // Creator name with shimmer
             Text(
                 text = "Sahil (Octavian)",
-                style = MaterialTheme.typography.headlineSmall,
-                fontWeight = FontWeight.Bold,
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFF00D4FF).copy(alpha = 0.5f + shimmerOffset * 0.5f),
-                        Color(0xFFB84CFF).copy(alpha = 0.5f + shimmerOffset * 0.5f),
-                        Color(0xFF00D4FF).copy(alpha = 0.5f + shimmerOffset * 0.5f)
-                    )
-                )
+                style = MaterialTheme.typography.headlineSmall.copy(
+                    fontWeight = FontWeight.Bold,
+                    brush = Brush.linearGradient(
+                        colors = listOf(
+                            Color(0xFF00D4FF).copy(alpha = 0.5f + shimmerOffset * 0.5f),
+                            Color(0xFFB84CFF).copy(alpha = 0.5f + shimmerOffset * 0.5f),
+                            Color(0xFF00D4FF).copy(alpha = 0.5f + shimmerOffset * 0.5f),
+                        ),
+                    ),
+                ),
             )
 
             Spacer(modifier = Modifier.height(4.dp))
