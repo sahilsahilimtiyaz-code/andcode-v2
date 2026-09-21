@@ -9,6 +9,7 @@ import androidx.compose.ui.graphics.Color
 object PremiumColorValues {
 
     // ── Neon accent colors ────────────────────────────────────────────────────
+
     /** Primary electric blue – main brand accent. */
     val NeonBlue = Color(0xFF00D4FF)
 
@@ -34,6 +35,7 @@ object PremiumColorValues {
     val NeonRed = Color(0xFFFF3366)
 
     // ── Semantic aliases ──────────────────────────────────────────────────────
+
     val Primary = NeonBlue
     val Secondary = ElectricPurple
     val Success = NeonGreen
@@ -41,6 +43,7 @@ object PremiumColorValues {
     val Error = NeonRed
 
     // ── Surface tints (for glass morphism) ────────────────────────────────────
+
     val GlassWhite = Color.White.copy(alpha = 0.08f)
     val GlassBorder = Color.White.copy(alpha = 0.15f)
     val GlassHighlight = Color.White.copy(alpha = 0.04f)
