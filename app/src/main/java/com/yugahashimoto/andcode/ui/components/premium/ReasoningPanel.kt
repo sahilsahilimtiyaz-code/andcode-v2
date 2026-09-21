@@ -2,6 +2,7 @@ package com.yugahashimoto.andcode.ui.components.premium
 
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.spring
@@ -24,8 +25,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -35,6 +38,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -44,7 +48,10 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -88,16 +95,6 @@ fun ReasoningPanel(
         label = "progressPulse",
     )
 
-    val expandAnim = infiniteTransition.animateFloat(
-        initialValue = if (expanded) 1f else 0f,
-        targetValue = if (expanded) 1f else 0f,
-        animationSpec = spring<Float>(
-            dampingRatio = Spring.DampingRatioMediumBouncy,
-            stiffness = Spring.StiffnessLow,
-        ),
-        label = "expandAnim",
-    )
-
     val glowAnim = infiniteTransition.animateFloat(
         initialValue = 0.3f,
         targetValue = 1f,
@@ -111,23 +108,18 @@ fun ReasoningPanel(
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .animateContentSize(
-                animationSpec = spring<Int>(
-                    dampingRatio = Spring.DampingRatioMediumBouncy,
-                    stiffness = Spring.StiffnessLow,
-                ),
-            )
+            .animateContentSize()
             .clip(RoundedCornerShape(PremiumTokens.RadiusLarge))
             .drawBehind {
                 val glowColor = PremiumColorValues.NeonBlue.copy(alpha = 0.08f * glowAnim.value)
                 drawRoundRect(
                     color = glowColor,
-                    size = this.size.toSize(),
+                    size = size,
                     cornerRadius = CornerRadius(
                         x = PremiumTokens.RadiusLarge.toPx(),
                         y = PremiumTokens.RadiusLarge.toPx(),
                     ),
-                    style = androidx.compose.ui.graphics.Stroke(width = 2.dp.toPx()),
+                    style = Stroke(width = 2.dp.toPx()),
                 )
             },
         color = Color.White.copy(alpha = 0.05f),
@@ -197,12 +189,7 @@ fun ReasoningPanel(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .animateContentSize(
-                            animationSpec = spring<Int>(
-                                dampingRatio = Spring.DampingRatioMediumBouncy,
-                                stiffness = Spring.StiffnessLow,
-                            ),
-                        ),
+                        .animateContentSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     steps.forEachIndexed { index, step ->
@@ -225,15 +212,14 @@ private fun ReasoningStepItem(
     step: ReasoningStep,
     index: Int,
     isLast: Boolean,
-    progressAnim: androidx.compose.animation.core.Animatable<Float, kotlinx.coroutines.Job>,
+    progressAnim: State<Float>,
     reducedMotion: Boolean,
 ) {
     val infiniteTransition = rememberInfiniteTransition(label = "step_$index")
 
-    val checkmarkAnim = infiniteTransition.animateFloat(
-        initialValue = 0f,
+    val checkmarkAnim by animateFloatAsState(
         targetValue = if (step.status == ReasoningStepStatus.COMPLETED) 1f else 0f,
-        animationSpec = spring<Float>(
+        animationSpec = spring(
             dampingRatio = Spring.DampingRatioMediumBouncy,
             stiffness = Spring.StiffnessMedium,
         ),
@@ -285,7 +271,7 @@ private fun ReasoningStepItem(
                         onDraw = {
                             val center = Offset(size.width / 2f, size.height / 2f)
                             val radius = 8f
-                            val progress = checkmarkAnim.value
+                            val progress = checkmarkAnim
 
                             // Circle background
                             drawCircle(
@@ -309,7 +295,7 @@ private fun ReasoningStepItem(
                             drawPath(
                                 path = trimPath,
                                 color = statusColor,
-                                style = androidx.compose.ui.graphics.Stroke(width = 2.5f, cap = androidx.compose.ui.graphics.StrokeCap.Round),
+                                style = Stroke(width = 2.5f, cap = StrokeCap.Round),
                             )
                         },
                     )
@@ -333,7 +319,7 @@ private fun ReasoningStepItem(
                                     useCenter = false,
                                     topLeft = Offset(center.x - radius, center.y - radius),
                                     size = Size(radius * 2, radius * 2),
-                                    style = androidx.compose.ui.graphics.Stroke(width = 2.5f, cap = androidx.compose.ui.graphics.StrokeCap.Round),
+                                    style = Stroke(width = 2.5f, cap = StrokeCap.Round),
                                 )
                             },
                     )
