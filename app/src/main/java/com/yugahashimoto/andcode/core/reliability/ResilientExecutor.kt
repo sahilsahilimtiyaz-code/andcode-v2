@@ -23,7 +23,7 @@ class ResilientExecutor(
         var totalDelay = 0L
 
         for (attempt in 1..retryPolicy.maxAttempts) {
-            circuitState = circuitState.checkCooldown()
+            circuitState = circuitState.checkCooldown(cooldownMillis = circuitBreakerConfig.cooldownMillis)
 
             if (circuitState.isOpen) {
                 return ExecutionResult(
@@ -46,7 +46,7 @@ class ResilientExecutor(
             } catch (e: Throwable) {
                 lastError = e
                 onError?.invoke(e, attempt)
-                circuitState = circuitState.recordFailure()
+                circuitState = circuitState.recordFailure(failureThreshold = circuitBreakerConfig.failureThreshold)
 
                 val errorClass = classifyError(e)
                 when (errorClass) {

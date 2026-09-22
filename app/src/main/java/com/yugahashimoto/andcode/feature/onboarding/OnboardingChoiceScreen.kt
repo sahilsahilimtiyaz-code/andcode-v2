@@ -146,6 +146,13 @@ fun OnboardingChoiceScreen(
             )
         }
         Spacer(Modifier.height(16.dp))
+        Text(
+            text = "v2.0-premium",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
+            textAlign = TextAlign.Center,
+        )
+        Spacer(Modifier.height(8.dp))
     }
 }
 

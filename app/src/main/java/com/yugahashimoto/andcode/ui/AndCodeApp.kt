@@ -681,13 +681,15 @@ fun AndCodeApp(
 
     // Every runtime's chats, not just the selected one's: switching agent used to look like the
     // history had been wiped. Each row carries the runtime that owns it so opening one can switch.
-    val allSessions by app.catalogRepository.allSessions.collectAsState()
-    val recentSessions =
+    val allSessions: List<RuntimeSessionRef> by app.catalogRepository.allSessions.collectAsState()
+    val recentSessions: List<DrawerRecentSession> =
         remember(allSessions, activityState.activeSessionIds, activityState.completedSessionIds) {
             allSessions
-                .filter { it.session.parentId == null }
-                .take(25).map { ref ->
-                    val session = ref.session
+                .filter { sessionRef -> sessionRef.session.parentId == null }
+                .take(25)
+                .map { sessionRef ->
+                    val session = sessionRef.session
+
                     DrawerRecentSession(
                         id = session.id,
                         title = session.title.ifBlank { session.slug ?: session.id },
@@ -701,8 +703,8 @@ fun AndCodeApp(
                                 session.id in activityState.completedSessionIds -> SessionStatus.COMPLETED_UNREAD
                                 else -> SessionStatus.IDLE
                             },
-                        runtimeId = ref.runtimeId,
-                        agent = ref.agent,
+                        runtimeId = sessionRef.runtimeId,
+                        agent = sessionRef.agent,
                     )
                 }
         }
@@ -1333,6 +1335,87 @@ fun AndCodeApp(
                         onShowCloneDialog = { showCloneDialog = true },
                         completeOnboardingAndGoToChat = completeOnboardingAndGoToChat,
                     )
+
+                    // Premium feature screens
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_MISSIONS) {
+                        com.yugahashimoto.andcode.feature.premium.MissionScreen(
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_BUILD_LAB) {
+                        com.yugahashimoto.andcode.feature.premium.BuildLabScreen(
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_PERFORMANCE_MONITOR) {
+                        com.yugahashimoto.andcode.feature.premium.PerformanceMonitorScreen(
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_AI_TEAM_SETTINGS) {
+                        val missionState = com.yugahashimoto.andcode.feature.premium.engines.MissionEngine().state.collectAsState()
+                        com.yugahashimoto.andcode.feature.premium.AiTeamSettingsScreen(
+                            missionState = missionState.value,
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_MODEL_ROUTER) {
+                        val routerState = com.yugahashimoto.andcode.feature.premium.engines.ModelRouter().state.collectAsState()
+                        com.yugahashimoto.andcode.feature.premium.ModelRouterScreen(
+                            routerState = routerState.value,
+                            onSelectProvider = {},
+                            onSelectStrategy = {},
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_PROJECT_INDEX) {
+                        val indexerState = com.yugahashimoto.andcode.feature.premium.engines.ProjectIndexer().state.collectAsState()
+                        com.yugahashimoto.andcode.feature.premium.ProjectIndexScreen(
+                            indexState = indexerState.value,
+                            onSearch = {},
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_BUILD_DOCTOR) {
+                        val gradleState = com.yugahashimoto.andcode.feature.premium.engines.GradleOutputParser().state.collectAsState()
+                        com.yugahashimoto.andcode.feature.premium.BuildDoctorScreen(
+                            gradleState = gradleState.value,
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_ADVANCED_GIT) {
+                        val conflictState = com.yugahashimoto.andcode.feature.premium.engines.ConflictResolver().state.collectAsState()
+                        com.yugahashimoto.andcode.feature.premium.AdvancedGitScreen(
+                            conflictState = conflictState.value,
+                            onResolve = { _, _ -> },
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_PLUGINS) {
+                        val pluginState = com.yugahashimoto.andcode.feature.premium.engines.PluginSandbox().state.collectAsState()
+                        com.yugahashimoto.andcode.feature.premium.PluginsScreen(
+                            pluginState = pluginState.value,
+                            onTogglePlugin = {},
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
+
+                    composable(com.yugahashimoto.andcode.ui.navigation.ROUTE_HELP) {
+                        val helpState = com.yugahashimoto.andcode.feature.premium.engines.HelpEngine().state.collectAsState()
+                        com.yugahashimoto.andcode.feature.premium.HelpScreen(
+                            helpState = helpState.value,
+                            onSearch = {},
+                            onBack = { navController.popBackStack() }
+                        )
+                    }
                 }
             }
         }
